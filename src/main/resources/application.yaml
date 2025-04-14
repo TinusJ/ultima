@@ -1,3 +1,56 @@
 spring:
   application:
     name: ultima
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Ultima
+    username: postgres
+    password: "@Tinus"
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: default
+    #    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  use-management-port: true
+  show-actuator: true
+
+jwt:
+  secret: zW4ER/tmmdKf1UJgJLA6i7hnAaJ0VgT7iO5Oe8x0D3Re2e+L8rVzRrp6mcrZ2skv
+  expiration: 86400000 # Token expiration in milliseconds (24 hours)
+
+server:
+  port: 8080
+
+management:
+  server:
+    port: 9090
+  endpoints:
+    web:
+      base-path: /stats
+      exposure:
+        include: [ "health","info","swagger-ui","openapi" ]
+  endpoint:
+    health:
+      show-details: always
+
+logging:
+  level:
+    org.springframework.web: INFO
+    org.hibernate: INFO
+    root: INFO

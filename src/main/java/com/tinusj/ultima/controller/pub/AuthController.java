@@ -1,4 +1,4 @@
-package com.tinusj.ultima.controller;
+package com.tinusj.ultima.controller.pub;
 
 import com.tinusj.ultima.dao.dto.LoginRequestDTO;
 import com.tinusj.ultima.dao.dto.RegisterRequestDTO;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Authentication", description = "API for user registration and login")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/public/auth")
 public class AuthController {
 
     private final AuthService authService;
