@@ -48,7 +48,7 @@ public class JwtTokenProvider {
                 .subject(userDetails.getUsername())
                 .issuedAt(now)
                 .expiration(expiryDate)
-                .signWith(key, SignatureAlgorithm.HS512) // Use HS512
+                .signWith(key)
                 .compact();
     }
 

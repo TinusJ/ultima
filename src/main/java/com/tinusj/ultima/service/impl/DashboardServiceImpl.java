@@ -1,8 +1,37 @@
 package com.tinusj.ultima.service.impl;
 
-import com.tinusj.ultima.dao.dto.*;
-import com.tinusj.ultima.dao.entity.*;
-import com.tinusj.ultima.repository.*;
+import com.tinusj.ultima.dao.dto.ActivityDto;
+import com.tinusj.ultima.dao.dto.AnalyticsMetricsDto;
+import com.tinusj.ultima.dao.dto.AudienceDto;
+import com.tinusj.ultima.dao.dto.BestSellerDto;
+import com.tinusj.ultima.dao.dto.BlogPostDto;
+import com.tinusj.ultima.dao.dto.ChatMessageDto;
+import com.tinusj.ultima.dao.dto.ContactDto;
+import com.tinusj.ultima.dao.dto.DashboardMetricsDto;
+import com.tinusj.ultima.dao.dto.DeviceDto;
+import com.tinusj.ultima.dao.dto.MostVisitedPageDto;
+import com.tinusj.ultima.dao.dto.OrderGraphDataDto;
+import com.tinusj.ultima.dao.dto.ProductDto;
+import com.tinusj.ultima.dao.dto.ReferralDto;
+import com.tinusj.ultima.dao.dto.RevenueGraphDataDto;
+import com.tinusj.ultima.dao.dto.SaaSMetricsDto;
+import com.tinusj.ultima.dao.dto.SubscriptionDto;
+import com.tinusj.ultima.dao.dto.TaskDto;
+import com.tinusj.ultima.dao.dto.TimelineEventDto;
+import com.tinusj.ultima.dao.dto.VisitorDto;
+import com.tinusj.ultima.dao.dto.VisitorsGraphDataDto;
+import com.tinusj.ultima.repository.ActivityRepository;
+import com.tinusj.ultima.repository.BlogPostRepository;
+import com.tinusj.ultima.repository.ChatMessageRepository;
+import com.tinusj.ultima.repository.CommentRepository;
+import com.tinusj.ultima.repository.ContactRepository;
+import com.tinusj.ultima.repository.CustomerRepository;
+import com.tinusj.ultima.repository.OrderRepository;
+import com.tinusj.ultima.repository.ProductRepository;
+import com.tinusj.ultima.repository.SubscriptionRepository;
+import com.tinusj.ultima.repository.TaskRepository;
+import com.tinusj.ultima.repository.TimelineEventRepository;
+import com.tinusj.ultima.repository.VisitorRepository;
 import com.tinusj.ultima.service.DashboardService;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +53,14 @@ public class DashboardServiceImpl implements DashboardService {
     private final TaskRepository taskRepository;
     private final SubscriptionRepository subscriptionRepository;
     private final VisitorRepository visitorRepository;
+    private final BlogPostRepository blogPostRepository;
 
     public DashboardServiceImpl(OrderRepository orderRepository, CustomerRepository customerRepository,
                                 CommentRepository commentRepository, ContactRepository contactRepository,
                                 TimelineEventRepository timelineEventRepository, ProductRepository productRepository,
                                 ChatMessageRepository chatMessageRepository, ActivityRepository activityRepository,
                                 TaskRepository taskRepository, SubscriptionRepository subscriptionRepository,
-                                VisitorRepository visitorRepository) {
+                                VisitorRepository visitorRepository, BlogPostRepository blogPostRepository) {
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.commentRepository = commentRepository;
@@ -42,6 +72,7 @@ public class DashboardServiceImpl implements DashboardService {
         this.taskRepository = taskRepository;
         this.subscriptionRepository = subscriptionRepository;
         this.visitorRepository = visitorRepository;
+        this.blogPostRepository = blogPostRepository;
     }
 
     @Override
@@ -63,6 +94,16 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
+    public AnalyticsMetricsDto getAnalyticsMetrics(LocalDate startDate) {
+        double revenue = orderRepository.sumTotalPrice() != null ? orderRepository.sumTotalPrice() : 0.0;
+        long potentialReach = customerRepository.count() * 10; // Simplified: 10x customers
+        long pageviews = visitorRepository.count();
+        long totalVisits = visitorRepository.count();
+        double engagementRate = totalVisits > 0 ? orderRepository.calculateEngagementRate(startDate, totalVisits) : 0.0;
+        return new AnalyticsMetricsDto(revenue, potentialReach, pageviews, engagementRate);
+    }
+
+    @Override
     public List<ContactDto> getContacts() {
         return contactRepository.findAll().stream()
                 .map(c -> new ContactDto(c.getId(), c.getName(), c.getEmail(), c.getPhone(), c.getPosition()))
@@ -80,6 +121,13 @@ public class DashboardServiceImpl implements DashboardService {
     public List<RevenueGraphDataDto> getRevenueGraphData(LocalDate startDate) {
         return orderRepository.findRevenueByDate(startDate).stream()
                 .map(obj -> new RevenueGraphDataDto((LocalDate) obj[0], ((Number) obj[1]).doubleValue()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VisitorsGraphDataDto> getVisitorsGraphData(LocalDate startDate) {
+        return visitorRepository.findVisitorCountsByDate(startDate).stream()
+                .map(obj -> new VisitorsGraphDataDto((LocalDate) obj[0], ((Number) obj[1]).longValue()))
                 .collect(Collectors.toList());
     }
 
@@ -140,6 +188,42 @@ public class DashboardServiceImpl implements DashboardService {
     public List<VisitorDto> getVisitors() {
         return visitorRepository.findAll().stream()
                 .map(v -> new VisitorDto(v.getId(), v.getSource(), v.getVisitCount(), v.getVisitDate()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MostVisitedPageDto> getMostVisitedPages() {
+        return visitorRepository.findMostVisitedPages().stream()
+                .map(obj -> new MostVisitedPageDto((String) obj[0], ((Number) obj[1]).longValue()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReferralDto> getReferrals() {
+        return visitorRepository.findReferrals().stream()
+                .map(obj -> new ReferralDto((String) obj[0], ((Number) obj[1]).longValue()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DeviceDto> getDevices() {
+        return visitorRepository.findDeviceDistribution().stream()
+                .map(obj -> new DeviceDto((String) obj[0], ((Number) obj[1]).doubleValue()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AudienceDto> getAudience() {
+        // Simplified: Assume customers represent audience, with mock age/gender
+        return customerRepository.findAll().stream()
+                .map(c -> new AudienceDto(c.getId(), c.getName(), "18-34", "Unknown"))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<BlogPostDto> getBlogPosts() {
+        return blogPostRepository.findAll().stream()
+                .map(b -> new BlogPostDto(b.getId(), b.getTitle(), b.getViewCount()))
                 .collect(Collectors.toList());
     }
 }

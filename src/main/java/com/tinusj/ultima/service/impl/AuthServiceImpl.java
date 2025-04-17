@@ -3,6 +3,7 @@ package com.tinusj.ultima.service.impl;
 import com.tinusj.ultima.dao.dto.LoginRequestDTO;
 import com.tinusj.ultima.dao.dto.RegisterRequestDTO;
 import com.tinusj.ultima.dao.entity.User;
+import com.tinusj.ultima.dao.enums.Role;
 import com.tinusj.ultima.repository.UserRepository;
 import com.tinusj.ultima.security.JwtTokenProvider;
 import com.tinusj.ultima.service.AuthService;
@@ -14,6 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -38,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
         user.setUsername(registerRequestDTO.username());
         user.setEmail(registerRequestDTO.email());
         user.setPassword(passwordEncoder.encode(registerRequestDTO.password()));
-        user.setRole("USER");
+        user.setRoles(Set.of(Role.USER));
 
         userRepository.save(user);
         return "User registered successfully";

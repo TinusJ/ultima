@@ -27,4 +27,7 @@ public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
             + "WHERE o.orderDate >= :startDate "
             + "GROUP BY DATE(o.orderDate)")
     List<Object[]> findRevenueByDate(LocalDate startDate);
+
+    @Query("SELECT COUNT(o) * 100.0 / :totalVisits FROM OrderEntity o WHERE o.orderDate >= :startDate")
+    Double calculateEngagementRate(LocalDate startDate, long totalVisits);
 }

@@ -35,6 +35,10 @@ public class OrderEntity {
     @JoinColumn(name = "subscription_id")
     private SubscriptionEntity subscription;
 
+    @ManyToOne
+    @JoinColumn(name = "visitor_id")
+    private VisitorEntity visitor;
+
     @Column(nullable = false)
     private Integer quantity;
 
