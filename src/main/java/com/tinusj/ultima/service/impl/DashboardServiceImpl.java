@@ -1,37 +1,8 @@
 package com.tinusj.ultima.service.impl;
 
-import com.tinusj.ultima.dao.dto.ActivityDto;
-import com.tinusj.ultima.dao.dto.AnalyticsMetricsDto;
-import com.tinusj.ultima.dao.dto.AudienceDto;
-import com.tinusj.ultima.dao.dto.BestSellerDto;
-import com.tinusj.ultima.dao.dto.BlogPostDto;
-import com.tinusj.ultima.dao.dto.ChatMessageDto;
-import com.tinusj.ultima.dao.dto.ContactDto;
-import com.tinusj.ultima.dao.dto.DashboardMetricsDto;
-import com.tinusj.ultima.dao.dto.DeviceDto;
-import com.tinusj.ultima.dao.dto.MostVisitedPageDto;
-import com.tinusj.ultima.dao.dto.OrderGraphDataDto;
-import com.tinusj.ultima.dao.dto.ProductDto;
-import com.tinusj.ultima.dao.dto.ReferralDto;
-import com.tinusj.ultima.dao.dto.RevenueGraphDataDto;
-import com.tinusj.ultima.dao.dto.SaaSMetricsDto;
-import com.tinusj.ultima.dao.dto.SubscriptionDto;
-import com.tinusj.ultima.dao.dto.TaskDto;
-import com.tinusj.ultima.dao.dto.TimelineEventDto;
-import com.tinusj.ultima.dao.dto.VisitorDto;
-import com.tinusj.ultima.dao.dto.VisitorsGraphDataDto;
-import com.tinusj.ultima.repository.ActivityRepository;
-import com.tinusj.ultima.repository.BlogPostRepository;
-import com.tinusj.ultima.repository.ChatMessageRepository;
-import com.tinusj.ultima.repository.CommentRepository;
-import com.tinusj.ultima.repository.ContactRepository;
-import com.tinusj.ultima.repository.CustomerRepository;
-import com.tinusj.ultima.repository.OrderRepository;
-import com.tinusj.ultima.repository.ProductRepository;
-import com.tinusj.ultima.repository.SubscriptionRepository;
-import com.tinusj.ultima.repository.TaskRepository;
-import com.tinusj.ultima.repository.TimelineEventRepository;
-import com.tinusj.ultima.repository.VisitorRepository;
+import com.tinusj.ultima.dao.dto.*;
+import com.tinusj.ultima.dao.entity.*;
+import com.tinusj.ultima.repository.*;
 import com.tinusj.ultima.service.DashboardService;
 import org.springframework.stereotype.Service;
 
@@ -54,13 +25,16 @@ public class DashboardServiceImpl implements DashboardService {
     private final SubscriptionRepository subscriptionRepository;
     private final VisitorRepository visitorRepository;
     private final BlogPostRepository blogPostRepository;
+    private final FileRepository fileRepository;
+    private final FolderRepository folderRepository;
 
     public DashboardServiceImpl(OrderRepository orderRepository, CustomerRepository customerRepository,
                                 CommentRepository commentRepository, ContactRepository contactRepository,
                                 TimelineEventRepository timelineEventRepository, ProductRepository productRepository,
                                 ChatMessageRepository chatMessageRepository, ActivityRepository activityRepository,
                                 TaskRepository taskRepository, SubscriptionRepository subscriptionRepository,
-                                VisitorRepository visitorRepository, BlogPostRepository blogPostRepository) {
+                                VisitorRepository visitorRepository, BlogPostRepository blogPostRepository,
+                                FileRepository fileRepository, FolderRepository folderRepository) {
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.commentRepository = commentRepository;
@@ -73,6 +47,8 @@ public class DashboardServiceImpl implements DashboardService {
         this.subscriptionRepository = subscriptionRepository;
         this.visitorRepository = visitorRepository;
         this.blogPostRepository = blogPostRepository;
+        this.fileRepository = fileRepository;
+        this.folderRepository = folderRepository;
     }
 
     @Override
@@ -214,7 +190,6 @@ public class DashboardServiceImpl implements DashboardService {
 
     @Override
     public List<AudienceDto> getAudience() {
-        // Simplified: Assume customers represent audience, with mock age/gender
         return customerRepository.findAll().stream()
                 .map(c -> new AudienceDto(c.getId(), c.getName(), "18-34", "Unknown"))
                 .collect(Collectors.toList());
@@ -224,6 +199,26 @@ public class DashboardServiceImpl implements DashboardService {
     public List<BlogPostDto> getBlogPosts() {
         return blogPostRepository.findAll().stream()
                 .map(b -> new BlogPostDto(b.getId(), b.getTitle(), b.getViewCount()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FileDto> getFiles(Long folderId) {
+        List<FileEntity> files = folderId == null
+                ? fileRepository.findByFolderIsNull()
+                : fileRepository.findByFolderId(folderId);
+        return files.stream()
+                .map(f -> new FileDto(f.getId(), f.getName(), f.getSize(), f.getType(), f.getUploadDate(), f.getFolder() != null ? f.getFolder().getId() : null))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<FolderDto> getFolders(Long parentFolderId) {
+        List<FolderEntity> folders = parentFolderId == null
+                ? folderRepository.findByParentFolderIsNull()
+                : folderRepository.findByParentFolderId(parentFolderId);
+        return folders.stream()
+                .map(f -> new FolderDto(f.getId(), f.getName(), f.getCreatedDate(), f.getParentFolder() != null ? f.getParentFolder().getId() : null))
                 .collect(Collectors.toList());
     }
 }
