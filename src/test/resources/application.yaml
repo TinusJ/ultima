@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: ultima
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Ultima
+    username: postgres
+    password: "@Tinus"
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: default
+    #    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  secret: your-secure-secret-key-1234567890abcdef # Replace with a strong secret (e.g., 32+ characters) TODO: fix security key
+  expiration: 86400000 # Token expiration in milliseconds (24 hours)
+
+logging:
+  level:
+    org.springframework.web: INFO
+    org.hibernate: INFO
+    root: INFO
