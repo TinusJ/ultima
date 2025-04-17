@@ -11,14 +11,20 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Long> {
+
     long count();
 
     @Query("SELECT SUM(o.totalPrice) FROM OrderEntity o")
     Double sumTotalPrice();
 
-    @Query("SELECT DATE(o.orderDate) as date, COUNT(o) as orderCount " +
-            "FROM OrderEntity o " +
-            "WHERE o.orderDate >= :startDate " +
-            "GROUP BY DATE(o.orderDate)")
+    @Query("SELECT DATE(o.orderDate) as date, COUNT(o) as orderCount "
+            + "FROM OrderEntity o " + "WHERE o.orderDate >= :startDate "
+            + "GROUP BY DATE(o.orderDate)")
     List<Object[]> findOrderCountsByDate(LocalDate startDate);
+
+    @Query("SELECT DATE(o.orderDate) as date, SUM(o.totalPrice) as revenue "
+            + "FROM OrderEntity o "
+            + "WHERE o.orderDate >= :startDate "
+            + "GROUP BY DATE(o.orderDate)")
+    List<Object[]> findRevenueByDate(LocalDate startDate);
 }

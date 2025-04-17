@@ -50,8 +50,8 @@ public class User {
     private Set<String> roles;
 
     @OneToMany(mappedBy = "assignee", cascade = CascadeType.ALL)
-    private Set<Task> assignedTasks;
+    private Set<TaskEntity> assignedTaskEntities;
 
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
-    private Set<Task> createdTasks;
+    private Set<TaskEntity> createdTaskEntities;
 }

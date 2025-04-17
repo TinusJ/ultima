@@ -1,25 +1,9 @@
 package com.tinusj.ultima.service.impl;
 
-
-import com.tinusj.ultima.dao.dto.ActivityDto;
-import com.tinusj.ultima.dao.dto.BestSellerDto;
-import com.tinusj.ultima.dao.dto.ChatMessageDto;
-import com.tinusj.ultima.dao.dto.ContactDto;
-import com.tinusj.ultima.dao.dto.DashboardMetricsDto;
-import com.tinusj.ultima.dao.dto.OrderGraphDataDto;
-import com.tinusj.ultima.dao.dto.ProductDto;
-import com.tinusj.ultima.dao.dto.TimelineEventDto;
-import com.tinusj.ultima.repository.ActivityRepository;
-import com.tinusj.ultima.repository.ChatMessageRepository;
-import com.tinusj.ultima.repository.CommentRepository;
-import com.tinusj.ultima.repository.ContactRepository;
-import com.tinusj.ultima.repository.CustomerRepository;
-import com.tinusj.ultima.repository.OrderRepository;
-import com.tinusj.ultima.repository.ProductRepository;
-import com.tinusj.ultima.repository.TimelineEventRepository;
+import com.tinusj.ultima.dao.dto.*;
+import com.tinusj.ultima.dao.entity.*;
+import com.tinusj.ultima.repository.*;
 import com.tinusj.ultima.service.DashboardService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -27,9 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
-@RequiredArgsConstructor
 public class DashboardServiceImpl implements DashboardService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
@@ -39,6 +21,28 @@ public class DashboardServiceImpl implements DashboardService {
     private final ProductRepository productRepository;
     private final ChatMessageRepository chatMessageRepository;
     private final ActivityRepository activityRepository;
+    private final TaskRepository taskRepository;
+    private final SubscriptionRepository subscriptionRepository;
+    private final VisitorRepository visitorRepository;
+
+    public DashboardServiceImpl(OrderRepository orderRepository, CustomerRepository customerRepository,
+                                CommentRepository commentRepository, ContactRepository contactRepository,
+                                TimelineEventRepository timelineEventRepository, ProductRepository productRepository,
+                                ChatMessageRepository chatMessageRepository, ActivityRepository activityRepository,
+                                TaskRepository taskRepository, SubscriptionRepository subscriptionRepository,
+                                VisitorRepository visitorRepository) {
+        this.orderRepository = orderRepository;
+        this.customerRepository = customerRepository;
+        this.commentRepository = commentRepository;
+        this.contactRepository = contactRepository;
+        this.timelineEventRepository = timelineEventRepository;
+        this.productRepository = productRepository;
+        this.chatMessageRepository = chatMessageRepository;
+        this.activityRepository = activityRepository;
+        this.taskRepository = taskRepository;
+        this.subscriptionRepository = subscriptionRepository;
+        this.visitorRepository = visitorRepository;
+    }
 
     @Override
     public DashboardMetricsDto getDashboardMetrics() {
@@ -47,6 +51,15 @@ public class DashboardServiceImpl implements DashboardService {
         long customerCount = customerRepository.count();
         long commentCount = commentRepository.count();
         return new DashboardMetricsDto(orderCount, revenue, customerCount, commentCount);
+    }
+
+    @Override
+    public SaaSMetricsDto getSaaSMetrics() {
+        long userCount = customerRepository.count();
+        long subscriptionCount = subscriptionRepository.count();
+        double revenue = orderRepository.sumTotalPrice() != null ? orderRepository.sumTotalPrice() : 0.0;
+        long visitorCount = visitorRepository.count();
+        return new SaaSMetricsDto(userCount, subscriptionCount, revenue, visitorCount);
     }
 
     @Override
@@ -60,6 +73,13 @@ public class DashboardServiceImpl implements DashboardService {
     public List<OrderGraphDataDto> getOrderGraphData(LocalDate startDate) {
         return orderRepository.findOrderCountsByDate(startDate).stream()
                 .map(obj -> new OrderGraphDataDto((LocalDate) obj[0], ((Number) obj[1]).longValue()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<RevenueGraphDataDto> getRevenueGraphData(LocalDate startDate) {
+        return orderRepository.findRevenueByDate(startDate).stream()
+                .map(obj -> new RevenueGraphDataDto((LocalDate) obj[0], ((Number) obj[1]).doubleValue()))
                 .collect(Collectors.toList());
     }
 
@@ -99,6 +119,27 @@ public class DashboardServiceImpl implements DashboardService {
                         (String) obj[1],
                         ((Number) obj[2]).longValue(),
                         new BigDecimal(obj[3].toString())))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<TaskDto> getTasks() {
+        return taskRepository.findAll().stream()
+                .map(t -> new TaskDto(t.getId(), t.getTitle(), t.getDescription(), t.getStatus().name()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SubscriptionDto> getSubscriptions() {
+        return subscriptionRepository.findAll().stream()
+                .map(s -> new SubscriptionDto(s.getId(), s.getName(), s.getPrice(), s.getMaxUsers(), s.getDescription()))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<VisitorDto> getVisitors() {
+        return visitorRepository.findAll().stream()
+                .map(v -> new VisitorDto(v.getId(), v.getSource(), v.getVisitCount(), v.getVisitDate()))
                 .collect(Collectors.toList());
     }
 }

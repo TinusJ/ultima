@@ -1,27 +1,23 @@
 package com.tinusj.ultima.controller;
 
-import com.tinusj.ultima.dao.dto.ChatMessageDto;
+import com.tinusj.ultima.dao.dto.VisitorDto;
 import com.tinusj.ultima.service.DashboardService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/chat")
-@PreAuthorize("isAuthenticated()")
-public class ChatController {
+@RequestMapping("/api/v1/visitors")
+public class VisitorController {
     private final DashboardService dashboardService;
 
     @GetMapping
-    public ResponseEntity<List<ChatMessageDto>> getChatMessages() {
-        return ResponseEntity.ok(dashboardService.getChatMessages());
+    public ResponseEntity<List<VisitorDto>> getVisitors() {
+        return ResponseEntity.ok(dashboardService.getVisitors());
     }
 }

@@ -3,7 +3,7 @@ package com.tinusj.ultima.service.impl;
 import com.tinusj.ultima.dao.dto.TaskCreateDTO;
 import com.tinusj.ultima.dao.dto.TaskResponseDTO;
 import com.tinusj.ultima.dao.dto.TaskUpdateDTO;
-import com.tinusj.ultima.dao.entity.Task;
+import com.tinusj.ultima.dao.entity.TaskEntity;
 import com.tinusj.ultima.dao.entity.User;
 import com.tinusj.ultima.dao.enums.TaskPriority;
 import com.tinusj.ultima.dao.enums.TaskStatus;
@@ -34,29 +34,29 @@ public class TaskServiceImpl implements TaskService {
         User creator = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
 
-        Task task = new Task();
-        task.setTitle(taskCreateDTO.title());
-        task.setDescription(taskCreateDTO.description());
-        task.setStatus(TaskStatus.valueOf(taskCreateDTO.status()));
-        task.setPriority(TaskPriority.valueOf(taskCreateDTO.priority()));
-        task.setDueDate(taskCreateDTO.dueDate());
-        task.setCreator(creator);
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setTitle(taskCreateDTO.title());
+        taskEntity.setDescription(taskCreateDTO.description());
+        taskEntity.setStatus(TaskStatus.valueOf(taskCreateDTO.status()));
+        taskEntity.setPriority(TaskPriority.valueOf(taskCreateDTO.priority()));
+        taskEntity.setDueDate(taskCreateDTO.dueDate());
+        taskEntity.setCreator(creator);
 
         if (taskCreateDTO.assigneeId() != null) {
             User assignee = userRepository.findById(taskCreateDTO.assigneeId())
                     .orElseThrow(() -> new ResourceNotFoundException("Assignee not found: " + taskCreateDTO.assigneeId()));
-            task.setAssignee(assignee);
+            taskEntity.setAssignee(assignee);
         }
 
-        task = taskRepository.save(task);
-        return mapToResponseDTO(task);
+        taskEntity = taskRepository.save(taskEntity);
+        return mapToResponseDTO(taskEntity);
     }
 
     @Override
     public TaskResponseDTO getTaskById(Long id) {
-        Task task = taskRepository.findById(id)
+        TaskEntity taskEntity = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found: " + id));
-        return mapToResponseDTO(task);
+        return mapToResponseDTO(taskEntity);
     }
 
     @Override
@@ -67,25 +67,25 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public TaskResponseDTO updateTask(Long id, TaskUpdateDTO taskUpdateDTO) {
-        Task task = taskRepository.findById(id)
+        TaskEntity taskEntity = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found: " + id));
 
-        if (taskUpdateDTO.title() != null) task.setTitle(taskUpdateDTO.title());
-        if (taskUpdateDTO.description() != null) task.setDescription(taskUpdateDTO.description());
-        if (taskUpdateDTO.status() != null) task.setStatus(TaskStatus.valueOf(taskUpdateDTO.status()));
-        if (taskUpdateDTO.priority() != null) task.setPriority(TaskPriority.valueOf(taskUpdateDTO.priority()));
-        if (taskUpdateDTO.dueDate() != null) task.setDueDate(taskUpdateDTO.dueDate());
+        if (taskUpdateDTO.title() != null) taskEntity.setTitle(taskUpdateDTO.title());
+        if (taskUpdateDTO.description() != null) taskEntity.setDescription(taskUpdateDTO.description());
+        if (taskUpdateDTO.status() != null) taskEntity.setStatus(TaskStatus.valueOf(taskUpdateDTO.status()));
+        if (taskUpdateDTO.priority() != null) taskEntity.setPriority(TaskPriority.valueOf(taskUpdateDTO.priority()));
+        if (taskUpdateDTO.dueDate() != null) taskEntity.setDueDate(taskUpdateDTO.dueDate());
 
         if (taskUpdateDTO.assigneeId() != null) {
             User assignee = userRepository.findById(taskUpdateDTO.assigneeId())
                     .orElseThrow(() -> new ResourceNotFoundException("Assignee not found: " + taskUpdateDTO.assigneeId()));
-            task.setAssignee(assignee);
+            taskEntity.setAssignee(assignee);
         } else {
-            task.setAssignee(null);
+            taskEntity.setAssignee(null);
         }
 
-        task = taskRepository.save(task);
-        return mapToResponseDTO(task);
+        taskEntity = taskRepository.save(taskEntity);
+        return mapToResponseDTO(taskEntity);
     }
 
     @Override
@@ -121,20 +121,20 @@ public class TaskServiceImpl implements TaskService {
                 .toList();
     }
 
-    private TaskResponseDTO mapToResponseDTO(Task task) {
+    private TaskResponseDTO mapToResponseDTO(TaskEntity taskEntity) {
         return new TaskResponseDTO(
-                task.getId(),
-                task.getTitle(),
-                task.getDescription(),
-                task.getStatus().name(),
-                task.getPriority().name(),
-                task.getDueDate(),
-                task.getCreatedAt(),
-                task.getUpdatedAt(),
-                task.getAssignee() != null ? task.getAssignee().getId() : null,
-                task.getAssignee() != null ? task.getAssignee().getUsername() : null,
-                task.getCreator().getId(),
-                task.getCreator().getUsername()
+                taskEntity.getId(),
+                taskEntity.getTitle(),
+                taskEntity.getDescription(),
+                taskEntity.getStatus().name(),
+                taskEntity.getPriority().name(),
+                taskEntity.getDueDate(),
+                taskEntity.getCreatedAt(),
+                taskEntity.getUpdatedAt(),
+                taskEntity.getAssignee() != null ? taskEntity.getAssignee().getId() : null,
+                taskEntity.getAssignee() != null ? taskEntity.getAssignee().getUsername() : null,
+                taskEntity.getCreator().getId(),
+                taskEntity.getCreator().getUsername()
         );
     }
 }
