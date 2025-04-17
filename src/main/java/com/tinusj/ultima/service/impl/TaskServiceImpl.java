@@ -11,6 +11,8 @@ import com.tinusj.ultima.exception.ResourceNotFoundException;
 import com.tinusj.ultima.repository.TaskRepository;
 import com.tinusj.ultima.repository.UserRepository;
 import com.tinusj.ultima.service.TaskService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,16 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
-
-    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository) {
-        this.taskRepository = taskRepository;
-        this.userRepository = userRepository;
-    }
 
     @Override
     @Transactional

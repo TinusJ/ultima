@@ -25,7 +25,6 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
 
-
     @Override
     public String register(RegisterRequestDTO registerRequestDTO) {
         if (userRepository.findByUsername(registerRequestDTO.username()).isPresent()) {
