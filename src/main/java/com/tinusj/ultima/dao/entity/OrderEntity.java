@@ -28,8 +28,12 @@ public class OrderEntity {
     private CustomerEntity customer;
 
     @ManyToOne
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private ProductEntity product;
+
+    @ManyToOne
+    @JoinColumn(name = "subscription_id")
+    private SubscriptionEntity subscription;
 
     @Column(nullable = false)
     private Integer quantity;

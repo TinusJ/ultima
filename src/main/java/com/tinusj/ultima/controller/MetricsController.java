@@ -1,6 +1,7 @@
 package com.tinusj.ultima.controller;
 
 import com.tinusj.ultima.dao.dto.DashboardMetricsDto;
+import com.tinusj.ultima.dao.dto.SaaSMetricsDto;
 import com.tinusj.ultima.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,12 +13,17 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/metrics")
 public class MetricsController {
     private final DashboardService dashboardService;
 
-    @GetMapping("/dashboard/metrics")
+    @GetMapping("/dashboard")
     public ResponseEntity<DashboardMetricsDto> getDashboardMetrics() {
         return ResponseEntity.ok(dashboardService.getDashboardMetrics());
+    }
+
+    @GetMapping("/saas")
+    public ResponseEntity<SaaSMetricsDto> getSaaSMetrics() {
+        return ResponseEntity.ok(dashboardService.getSaaSMetrics());
     }
 }

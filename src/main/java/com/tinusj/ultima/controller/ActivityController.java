@@ -15,13 +15,12 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/activities")
 @PreAuthorize("isAuthenticated()")
 public class ActivityController {
     private final DashboardService dashboardService;
 
-
-    @GetMapping("/activities")
+    @GetMapping
     public ResponseEntity<List<ActivityDto>> getActivities() {
         return ResponseEntity.ok(dashboardService.getActivities());
     }

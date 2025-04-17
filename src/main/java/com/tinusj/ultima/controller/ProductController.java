@@ -15,17 +15,17 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/products")
 public class ProductController {
     private final DashboardService dashboardService;
 
 
-    @GetMapping("/products")
+    @GetMapping
     public ResponseEntity<List<ProductDto>> getProducts() {
         return ResponseEntity.ok(dashboardService.getProducts());
     }
 
-    @GetMapping("/products/best-sellers")
+    @GetMapping("/best-sellers")
     public ResponseEntity<List<BestSellerDto>> getBestSellers() {
         return ResponseEntity.ok(dashboardService.getBestSellers());
     }

@@ -14,11 +14,11 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/timeline")
 public class TimelineController {
     private final DashboardService dashboardService;
 
-    @GetMapping("/timeline")
+    @GetMapping
     public ResponseEntity<List<TimelineEventDto>> getTimelineEvents() {
         return ResponseEntity.ok(dashboardService.getTimelineEvents());
     }

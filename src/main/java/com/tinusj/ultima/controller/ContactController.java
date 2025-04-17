@@ -14,12 +14,12 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/contacts")
 public class ContactController {
     private final DashboardService dashboardService;
 
 
-    @GetMapping("/contacts")
+    @GetMapping
     public ResponseEntity<List<ContactDto>> getContacts() {
         return ResponseEntity.ok(dashboardService.getContacts());
     }

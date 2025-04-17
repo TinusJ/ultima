@@ -1,8 +1,10 @@
 package com.tinusj.ultima.controller;
 
 import com.tinusj.ultima.dao.dto.TaskCreateDTO;
+import com.tinusj.ultima.dao.dto.TaskDto;
 import com.tinusj.ultima.dao.dto.TaskResponseDTO;
 import com.tinusj.ultima.dao.dto.TaskUpdateDTO;
+import com.tinusj.ultima.service.DashboardService;
 import com.tinusj.ultima.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,7 +39,7 @@ import java.util.List;
 @RequestMapping("/api/v1/tasks")
 @SecurityRequirement(name = "bearerAuth")
 public class TaskController {
-
+    private final DashboardService dashboardService;
     private final TaskService taskService;
 
     @PostMapping
@@ -201,5 +203,10 @@ public class TaskController {
     public ResponseEntity<List<TaskResponseDTO>> getTasksByCreator(Authentication authentication) {
         String username = authentication.getName();
         return ResponseEntity.ok(taskService.getTasksByCreator(username));
+    }
+
+    @GetMapping("/tasks")
+    public ResponseEntity<List<TaskDto>> getTasks() {
+        return ResponseEntity.ok(dashboardService.getTasks());
     }
 }
