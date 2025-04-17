@@ -9,29 +9,18 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
-
 @Entity
-@Table(name = "visitors")
+@Table(name = "blog_posts")
 @Getter
 @Setter
-public class VisitorEntity {
+public class BlogPostEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String source;
+    private String title;
 
     @Column(nullable = false)
-    private Long visitCount;
-
-    @Column(nullable = false)
-    private LocalDate visitDate;
-
-    @Column
-    private String deviceType;
-
-    @Column
-    private String pageUrl;
+    private Long viewCount;
 }
