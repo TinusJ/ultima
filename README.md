@@ -162,4 +162,4 @@ Run `spring.jpa.hibernate.ddl-auto=update` to auto-generate tables, or use a mig
 Please follow the [Code of Conduct](CODE_OF_CONDUCT.md) and include tests for new features.
 
 ## License
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+This project is licensed under the MIT License. See [LICENSE](LICENSE.txt) for details.
