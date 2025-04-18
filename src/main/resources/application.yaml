@@ -10,7 +10,7 @@ spring:
     database: default
     #    show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop #TODO: change this
     properties:
       hibernate:
         format_sql: true
