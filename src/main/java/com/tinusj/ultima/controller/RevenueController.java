@@ -18,7 +18,6 @@ import java.util.List;
 public class RevenueController {
     private final DashboardService dashboardService;
 
-
     @GetMapping("/graph")
     public ResponseEntity<List<RevenueGraphDataDto>> getRevenueGraphData(
             @RequestParam("startDate") String startDate) {

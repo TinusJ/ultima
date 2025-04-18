@@ -1,4 +1,4 @@
-package com.tinusj.ultima.service;
+package com.tinusj.ultima.service.impl;
 
 import com.tinusj.ultima.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Value;

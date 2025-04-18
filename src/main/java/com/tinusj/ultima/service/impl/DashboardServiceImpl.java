@@ -1,9 +1,45 @@
 package com.tinusj.ultima.service.impl;
 
-import com.tinusj.ultima.dao.dto.*;
-import com.tinusj.ultima.dao.entity.*;
-import com.tinusj.ultima.repository.*;
+import com.tinusj.ultima.dao.dto.ActivityDto;
+import com.tinusj.ultima.dao.dto.AnalyticsMetricsDto;
+import com.tinusj.ultima.dao.dto.AudienceDto;
+import com.tinusj.ultima.dao.dto.BestSellerDto;
+import com.tinusj.ultima.dao.dto.BlogPostDto;
+import com.tinusj.ultima.dao.dto.ChatMessageDto;
+import com.tinusj.ultima.dao.dto.ContactDto;
+import com.tinusj.ultima.dao.dto.DashboardMetricsDto;
+import com.tinusj.ultima.dao.dto.DeviceDto;
+import com.tinusj.ultima.dao.dto.FileDto;
+import com.tinusj.ultima.dao.dto.FolderDto;
+import com.tinusj.ultima.dao.dto.MostVisitedPageDto;
+import com.tinusj.ultima.dao.dto.OrderGraphDataDto;
+import com.tinusj.ultima.dao.dto.ProductDto;
+import com.tinusj.ultima.dao.dto.ReferralDto;
+import com.tinusj.ultima.dao.dto.RevenueGraphDataDto;
+import com.tinusj.ultima.dao.dto.SaaSMetricsDto;
+import com.tinusj.ultima.dao.dto.SubscriptionDto;
+import com.tinusj.ultima.dao.dto.TaskDto;
+import com.tinusj.ultima.dao.dto.TimelineEventDto;
+import com.tinusj.ultima.dao.dto.VisitorDto;
+import com.tinusj.ultima.dao.dto.VisitorsGraphDataDto;
+import com.tinusj.ultima.dao.entity.FileEntity;
+import com.tinusj.ultima.dao.entity.FolderEntity;
+import com.tinusj.ultima.repository.ActivityRepository;
+import com.tinusj.ultima.repository.BlogPostRepository;
+import com.tinusj.ultima.repository.ChatMessageRepository;
+import com.tinusj.ultima.repository.CommentRepository;
+import com.tinusj.ultima.repository.ContactRepository;
+import com.tinusj.ultima.repository.CustomerRepository;
+import com.tinusj.ultima.repository.FileRepository;
+import com.tinusj.ultima.repository.FolderRepository;
+import com.tinusj.ultima.repository.OrderRepository;
+import com.tinusj.ultima.repository.ProductRepository;
+import com.tinusj.ultima.repository.SubscriptionRepository;
+import com.tinusj.ultima.repository.TaskRepository;
+import com.tinusj.ultima.repository.TimelineEventRepository;
+import com.tinusj.ultima.repository.VisitorRepository;
 import com.tinusj.ultima.service.DashboardService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -12,6 +48,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class DashboardServiceImpl implements DashboardService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
@@ -27,29 +64,6 @@ public class DashboardServiceImpl implements DashboardService {
     private final BlogPostRepository blogPostRepository;
     private final FileRepository fileRepository;
     private final FolderRepository folderRepository;
-
-    public DashboardServiceImpl(OrderRepository orderRepository, CustomerRepository customerRepository,
-                                CommentRepository commentRepository, ContactRepository contactRepository,
-                                TimelineEventRepository timelineEventRepository, ProductRepository productRepository,
-                                ChatMessageRepository chatMessageRepository, ActivityRepository activityRepository,
-                                TaskRepository taskRepository, SubscriptionRepository subscriptionRepository,
-                                VisitorRepository visitorRepository, BlogPostRepository blogPostRepository,
-                                FileRepository fileRepository, FolderRepository folderRepository) {
-        this.orderRepository = orderRepository;
-        this.customerRepository = customerRepository;
-        this.commentRepository = commentRepository;
-        this.contactRepository = contactRepository;
-        this.timelineEventRepository = timelineEventRepository;
-        this.productRepository = productRepository;
-        this.chatMessageRepository = chatMessageRepository;
-        this.activityRepository = activityRepository;
-        this.taskRepository = taskRepository;
-        this.subscriptionRepository = subscriptionRepository;
-        this.visitorRepository = visitorRepository;
-        this.blogPostRepository = blogPostRepository;
-        this.fileRepository = fileRepository;
-        this.folderRepository = folderRepository;
-    }
 
     @Override
     public DashboardMetricsDto getDashboardMetrics() {

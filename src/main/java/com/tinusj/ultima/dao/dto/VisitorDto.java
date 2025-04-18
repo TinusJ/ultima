@@ -7,4 +7,5 @@ public record VisitorDto(
         String source,
         Long visitCount,
         LocalDate visitDate
-) {}
+) {
+}

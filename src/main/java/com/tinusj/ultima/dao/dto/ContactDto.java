@@ -6,4 +6,5 @@ public record ContactDto(
         String email,
         String phone,
         String position
-) {}
+) {
+}

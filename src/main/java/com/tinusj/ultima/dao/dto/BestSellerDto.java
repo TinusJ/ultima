@@ -7,4 +7,5 @@ public record BestSellerDto(
         String productName,
         long totalSold,
         BigDecimal totalRevenue
-) {}
+) {
+}

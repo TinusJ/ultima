@@ -4,4 +4,5 @@ public record FileUploadResponseDto(
         Long fileId,
         String fileName,
         String message
-) {}
+) {
+}

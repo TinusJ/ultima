@@ -4,4 +4,5 @@ public record BlogPostDto(
         Long id,
         String title,
         Long viewCount
-) {}
+) {
+}

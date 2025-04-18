@@ -8,4 +8,5 @@ public record SubscriptionDto(
         BigDecimal price,
         Integer maxUsers,
         String description
-) {}
+) {
+}

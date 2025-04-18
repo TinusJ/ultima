@@ -18,7 +18,6 @@ import java.util.List;
 public class ContactController {
     private final DashboardService dashboardService;
 
-
     @GetMapping
     public ResponseEntity<List<ContactDto>> getContacts() {
         return ResponseEntity.ok(dashboardService.getContacts());

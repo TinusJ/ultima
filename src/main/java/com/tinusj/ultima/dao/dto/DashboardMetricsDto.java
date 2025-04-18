@@ -5,4 +5,5 @@ public record DashboardMetricsDto(
         double revenue,
         long customerCount,
         long commentCount
-) {}
+) {
+}

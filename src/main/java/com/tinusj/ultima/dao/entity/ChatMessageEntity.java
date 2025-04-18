@@ -3,12 +3,14 @@ package com.tinusj.ultima.dao.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "chat_messages")
+
 @Getter
 @Setter
+@Entity
+@Table(name = "chat_messages")
 public class ChatMessageEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

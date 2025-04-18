@@ -10,7 +10,7 @@ import com.tinusj.ultima.repository.FileRepository;
 import com.tinusj.ultima.repository.FolderRepository;
 import com.tinusj.ultima.repository.UserRepository;
 import com.tinusj.ultima.service.DashboardService;
-import com.tinusj.ultima.service.FileStorageService;
+import com.tinusj.ultima.service.impl.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

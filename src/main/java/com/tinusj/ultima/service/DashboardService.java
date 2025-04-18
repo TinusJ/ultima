@@ -28,25 +28,46 @@ import java.util.List;
 
 public interface DashboardService {
     DashboardMetricsDto getDashboardMetrics();
+
     SaaSMetricsDto getSaaSMetrics();
+
     AnalyticsMetricsDto getAnalyticsMetrics(LocalDate startDate);
+
     List<ContactDto> getContacts();
+
     List<OrderGraphDataDto> getOrderGraphData(LocalDate startDate);
+
     List<RevenueGraphDataDto> getRevenueGraphData(LocalDate startDate);
+
     List<VisitorsGraphDataDto> getVisitorsGraphData(LocalDate startDate);
+
     List<TimelineEventDto> getTimelineEvents();
+
     List<ProductDto> getProducts();
+
     List<ChatMessageDto> getChatMessages();
+
     List<ActivityDto> getActivities();
+
     List<BestSellerDto> getBestSellers();
+
     List<TaskDto> getTasks();
+
     List<SubscriptionDto> getSubscriptions();
+
     List<VisitorDto> getVisitors();
+
     List<MostVisitedPageDto> getMostVisitedPages();
+
     List<ReferralDto> getReferrals();
+
     List<DeviceDto> getDevices();
+
     List<AudienceDto> getAudience();
+
     List<BlogPostDto> getBlogPosts();
+
     List<FileDto> getFiles(Long folderId);
+
     List<FolderDto> getFolders(Long parentFolderId);
 }

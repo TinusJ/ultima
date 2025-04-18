@@ -5,4 +5,5 @@ public record SaaSMetricsDto(
         long subscriptionCount,
         double revenue,
         long visitorCount
-) {}
+) {
+}

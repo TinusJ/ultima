@@ -8,4 +8,5 @@ public record ProductDto(
         BigDecimal price,
         Integer stock,
         String imageUrl
-) {}
+) {
+}

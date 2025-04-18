@@ -9,4 +9,5 @@ public record FileDto(
         String type,
         LocalDateTime uploadDate,
         Long folderId
-) {}
+) {
+}

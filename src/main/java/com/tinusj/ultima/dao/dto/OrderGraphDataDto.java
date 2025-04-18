@@ -5,4 +5,5 @@ import java.time.LocalDate;
 public record OrderGraphDataDto(
         LocalDate date,
         long orderCount
-) {}
+) {
+}
