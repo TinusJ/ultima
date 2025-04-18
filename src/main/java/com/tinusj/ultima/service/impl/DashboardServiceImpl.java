@@ -124,7 +124,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public List<ChatMessageDto> getChatMessages() {
         return chatMessageRepository.findAll().stream()
-                .map(m -> new ChatMessageDto(m.getId(), m.getSender(), m.getContent(), m.getSentAt()))
+                .map(m -> new ChatMessageDto(m.getId(), m.getSender().getUsername(), m.getContent(), m.getSentAt()))
                 .collect(Collectors.toList());
     }
 
