@@ -11,10 +11,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "timeline_events")
 @Getter
 @Setter
+@Entity
+@Table(name = "timeline_events")
 public class TimelineEventEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

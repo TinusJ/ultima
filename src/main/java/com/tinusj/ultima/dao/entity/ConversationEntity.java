@@ -13,10 +13,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "conversations")
 @Getter
 @Setter
+@Entity
+@Table(name = "conversations")
 public class ConversationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

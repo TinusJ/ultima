@@ -16,4 +16,5 @@ public record TaskResponseDTO(
         String assigneeUsername,
         Long creatorId,
         String creatorUsername
-) {}
+) {
+}

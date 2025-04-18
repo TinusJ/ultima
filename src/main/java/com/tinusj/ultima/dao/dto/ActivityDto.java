@@ -6,4 +6,5 @@ public record ActivityDto(
         Long id,
         String description,
         LocalDateTime activityDate
-) {}
+) {
+}

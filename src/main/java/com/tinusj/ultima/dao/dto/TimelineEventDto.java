@@ -7,4 +7,5 @@ public record TimelineEventDto(
         String title,
         String description,
         LocalDateTime eventDate
-) {}
+) {
+}

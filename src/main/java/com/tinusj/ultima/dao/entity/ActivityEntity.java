@@ -11,10 +11,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "activities")
 @Getter
 @Setter
+@Entity
+@Table(name = "activities")
 public class ActivityEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

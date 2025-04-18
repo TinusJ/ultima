@@ -11,10 +11,10 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "subscriptions")
 @Getter
 @Setter
+@Entity
+@Table(name = "subscriptions")
 public class SubscriptionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

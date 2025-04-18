@@ -7,4 +7,5 @@ public record FolderDto(
         String name,
         LocalDateTime createdDate,
         Long parentFolderId
-) {}
+) {
+}

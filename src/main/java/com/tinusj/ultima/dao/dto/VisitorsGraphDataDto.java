@@ -5,4 +5,5 @@ import java.time.LocalDate;
 public record VisitorsGraphDataDto(
         LocalDate date,
         long visitCount
-) {}
+) {
+}

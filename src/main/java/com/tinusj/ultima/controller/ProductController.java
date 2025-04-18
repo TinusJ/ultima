@@ -19,7 +19,6 @@ import java.util.List;
 public class ProductController {
     private final DashboardService dashboardService;
 
-
     @GetMapping
     public ResponseEntity<List<ProductDto>> getProducts() {
         return ResponseEntity.ok(dashboardService.getProducts());

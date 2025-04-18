@@ -16,4 +16,5 @@ public record RegisterRequestDTO(
         @NotBlank(message = "Password is mandatory")
         @Size(min = 6, message = "Password must be at least 6 characters")
         String password
-) {}
+) {
+}

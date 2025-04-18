@@ -13,9 +13,9 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Task List API")
-                        .version("1.0.0")
-                        .description("API for managing tasks in the Ultima PrimeNG Task List application"))
+                        .title("Ultima API")
+                        .version("0.0.1")
+                        .description("API for managing features in the Ultima PrimeNG theme"))
                 .addSecurityItem(new io.swagger.v3.oas.models.security.SecurityRequirement().addList("bearerAuth"))
                 .components(new io.swagger.v3.oas.models.Components()
                         .addSecuritySchemes("bearerAuth",

@@ -9,5 +9,6 @@ import java.util.List;
 @Repository
 public interface FileRepository extends JpaRepository<FileEntity, Long> {
     List<FileEntity> findByFolderIsNull();
+
     List<FileEntity> findByFolderId(Long folderId);
 }

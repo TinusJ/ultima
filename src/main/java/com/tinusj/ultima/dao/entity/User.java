@@ -24,12 +24,12 @@ import lombok.Setter;
 
 import java.util.Set;
 
-@Entity
 @Getter
 @Setter
-@Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

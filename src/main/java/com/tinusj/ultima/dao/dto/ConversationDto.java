@@ -8,4 +8,5 @@ public record ConversationDto(
         String otherParticipantUsername,
         String lastMessage,
         LocalDateTime lastMessageAt
-) {}
+) {
+}
