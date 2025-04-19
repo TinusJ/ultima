@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.tinusj</groupId>
     <artifactId>ultima</artifactId>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.3.0-SNAPSHOT</version>
     <name>ultima</name>
     <description>Demo project for Spring Boot, Backend for Ultima NG</description>
 
