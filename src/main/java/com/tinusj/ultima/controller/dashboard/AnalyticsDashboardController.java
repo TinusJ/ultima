@@ -2,7 +2,7 @@ package com.tinusj.ultima.controller.dashboard;
 
 import com.tinusj.ultima.dao.dto.AnalyticsMetricsDto;
 import com.tinusj.ultima.dao.dto.AudienceDto;
-import com.tinusj.ultima.dao.dto.BlogPostDto;
+import com.tinusj.ultima.dao.dto.DashboardBlogPostDto;
 import com.tinusj.ultima.dao.dto.DeviceDto;
 import com.tinusj.ultima.dao.dto.MostVisitedPageDto;
 import com.tinusj.ultima.dao.dto.ReferralDto;
@@ -30,7 +30,7 @@ public class AnalyticsDashboardController {
     }
 
     @GetMapping("/blog-posts")
-    public ResponseEntity<List<BlogPostDto>> getBlogPosts() {
+    public ResponseEntity<List<DashboardBlogPostDto>> getBlogPosts() {
         return ResponseEntity.ok(dashboardService.getBlogPosts());
     }
 

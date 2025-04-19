@@ -7,6 +7,7 @@ import com.tinusj.ultima.dao.dto.BestSellerDto;
 import com.tinusj.ultima.dao.dto.BlogPostDto;
 import com.tinusj.ultima.dao.dto.ChatMessageDto;
 import com.tinusj.ultima.dao.dto.ContactDto;
+import com.tinusj.ultima.dao.dto.DashboardBlogPostDto;
 import com.tinusj.ultima.dao.dto.DashboardMetricsDto;
 import com.tinusj.ultima.dao.dto.DeviceDto;
 import com.tinusj.ultima.dao.dto.FileDto;
@@ -65,7 +66,7 @@ public interface DashboardService {
 
     List<AudienceDto> getAudience();
 
-    List<BlogPostDto> getBlogPosts();
+    List<DashboardBlogPostDto> getBlogPosts();
 
     List<FileDto> getFiles(Long folderId);
 

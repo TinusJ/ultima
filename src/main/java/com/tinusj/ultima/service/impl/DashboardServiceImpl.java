@@ -7,6 +7,7 @@ import com.tinusj.ultima.dao.dto.BestSellerDto;
 import com.tinusj.ultima.dao.dto.BlogPostDto;
 import com.tinusj.ultima.dao.dto.ChatMessageDto;
 import com.tinusj.ultima.dao.dto.ContactDto;
+import com.tinusj.ultima.dao.dto.DashboardBlogPostDto;
 import com.tinusj.ultima.dao.dto.DashboardMetricsDto;
 import com.tinusj.ultima.dao.dto.DeviceDto;
 import com.tinusj.ultima.dao.dto.FileDto;
@@ -38,6 +39,7 @@ import com.tinusj.ultima.repository.SubscriptionRepository;
 import com.tinusj.ultima.repository.TaskRepository;
 import com.tinusj.ultima.repository.TimelineEventRepository;
 import com.tinusj.ultima.repository.VisitorRepository;
+import com.tinusj.ultima.service.BlogService;
 import com.tinusj.ultima.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -64,6 +66,7 @@ public class DashboardServiceImpl implements DashboardService {
     private final BlogPostRepository blogPostRepository;
     private final FileRepository fileRepository;
     private final FolderRepository folderRepository;
+    private final BlogService blogService;
 
     @Override
     public DashboardMetricsDto getDashboardMetrics() {
@@ -209,10 +212,9 @@ public class DashboardServiceImpl implements DashboardService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<BlogPostDto> getBlogPosts() {
-        return blogPostRepository.findAll().stream()
-                .map(b -> new BlogPostDto(b.getId(), b.getTitle(), b.getViewCount()))
+    public List<DashboardBlogPostDto> getBlogPosts() {
+        return blogPostRepository.findByIsPublishedTrue().stream()
+                .map(b -> new DashboardBlogPostDto(b.getId(), b.getTitle(), b.getViewCount()))
                 .collect(Collectors.toList());
     }
 
