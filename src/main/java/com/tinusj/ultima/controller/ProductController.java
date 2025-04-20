@@ -1,31 +1,70 @@
 package com.tinusj.ultima.controller;
 
-import com.tinusj.ultima.dao.dto.BestSellerDto;
 import com.tinusj.ultima.dao.dto.ProductDto;
-import com.tinusj.ultima.service.DashboardService;
+import com.tinusj.ultima.dao.dto.ReviewDto;
+import com.tinusj.ultima.service.EcommerceService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
+@RequiredArgsConstructor
+@SecurityRequirement(name = "bearerAuth")
 public class ProductController {
-    private final DashboardService dashboardService;
 
+    private final EcommerceService ecommerceService;
+
+    @Operation(summary = "Get all products", description = "Returns a list of all products for the dashboard.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Products retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - User lacks required role")
+    })
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<List<ProductDto>> getProducts() {
-        return ResponseEntity.ok(dashboardService.getProducts());
+        return ResponseEntity.ok(ecommerceService.getProducts());
     }
 
-    @GetMapping("/best-sellers")
-    public ResponseEntity<List<BestSellerDto>> getBestSellers() {
-        return ResponseEntity.ok(dashboardService.getBestSellers());
+    @Operation(summary = "Get product details", description = "Returns the details of a single product, including reviews. Public endpoint.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Product retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Product not found")
+    })
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
+        return ResponseEntity.ok(ecommerceService.getProduct(id));
+    }
+
+    @Operation(summary = "Submit a product review", description = "Submits a review for a product. Requires authentication.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Review submitted successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - User lacks required role"),
+            @ApiResponse(responseCode = "404", description = "Product not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid input")
+    })
+    @PostMapping("/{id}/reviews")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
+    public ResponseEntity<ReviewDto> submitReview(@PathVariable Long id, @RequestBody ReviewDto reviewDto) {
+        return ResponseEntity.ok(ecommerceService.submitReview(id, reviewDto));
+    }
+
+    @Operation(summary = "Get related products", description = "Returns a list of products related to the specified product. Public endpoint.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Related products retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Product not found")
+    })
+    @GetMapping("/{id}/related")
+    public ResponseEntity<List<ProductDto>> getRelatedProducts(@PathVariable Long id) {
+        return ResponseEntity.ok(ecommerceService.getRelatedProducts(id));
     }
 }

@@ -42,6 +42,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -119,12 +120,23 @@ public class DashboardServiceImpl implements DashboardService {
                 .collect(Collectors.toList());
     }
 
+
     @Override
     public List<ProductDto> getProducts() {
         return productRepository.findAll().stream()
-                .map(p -> new ProductDto(p.getId(), p.getName(), p.getPrice(), p.getStock(), p.getImageUrl()))
+                .map(p -> new ProductDto(
+                        p.getId(),
+                        p.getName(),
+                        p.getDescription(),
+                        p.getPrice(),
+                        p.getStock(),
+                        p.getCategory(),
+                        p.getImageUrls(),
+                        p.getStatus(),
+                        Collections.emptyList())) // Reviews not needed for dashboard
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public List<ChatMessageDto> getChatMessages() {
