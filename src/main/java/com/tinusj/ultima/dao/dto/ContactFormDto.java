@@ -1,9 +1,7 @@
 package com.tinusj.ultima.dao.dto;
 
-public record ContactDto(
-        Long id,
+public record ContactFormDto(
         String name,
         String email,
-        String phone,
         String message
 ) {}

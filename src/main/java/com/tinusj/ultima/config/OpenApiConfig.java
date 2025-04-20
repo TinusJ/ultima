@@ -19,7 +19,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("Ultima API")
-                        .version("0.5.0")
+                        .version("0.6.0")
                         .description("API for managing features in the Ultima PrimeNG theme"));
     }
 }
