@@ -3,8 +3,6 @@ package com.tinusj.ultima.service.impl;
 import com.tinusj.ultima.dao.dto.ActivityDto;
 import com.tinusj.ultima.dao.dto.AnalyticsMetricsDto;
 import com.tinusj.ultima.dao.dto.AudienceDto;
-import com.tinusj.ultima.dao.dto.BestSellerDto;
-import com.tinusj.ultima.dao.dto.ChatMessageDto;
 import com.tinusj.ultima.dao.dto.DashboardBlogPostDto;
 import com.tinusj.ultima.dao.dto.DashboardMetricsDto;
 import com.tinusj.ultima.dao.dto.DeviceDto;
@@ -12,7 +10,6 @@ import com.tinusj.ultima.dao.dto.FileDto;
 import com.tinusj.ultima.dao.dto.FolderDto;
 import com.tinusj.ultima.dao.dto.MostVisitedPageDto;
 import com.tinusj.ultima.dao.dto.OrderGraphDataDto;
-import com.tinusj.ultima.dao.dto.ProductDto;
 import com.tinusj.ultima.dao.dto.ReferralDto;
 import com.tinusj.ultima.dao.dto.RevenueGraphDataDto;
 import com.tinusj.ultima.dao.dto.SaaSMetricsDto;
@@ -25,13 +22,11 @@ import com.tinusj.ultima.dao.entity.FileEntity;
 import com.tinusj.ultima.dao.entity.FolderEntity;
 import com.tinusj.ultima.repository.ActivityRepository;
 import com.tinusj.ultima.repository.BlogPostRepository;
-import com.tinusj.ultima.repository.ChatMessageRepository;
 import com.tinusj.ultima.repository.CommentRepository;
 import com.tinusj.ultima.repository.CustomerRepository;
 import com.tinusj.ultima.repository.FileRepository;
 import com.tinusj.ultima.repository.FolderRepository;
 import com.tinusj.ultima.repository.OrderRepository;
-import com.tinusj.ultima.repository.ProductRepository;
 import com.tinusj.ultima.repository.SubscriptionRepository;
 import com.tinusj.ultima.repository.TaskRepository;
 import com.tinusj.ultima.repository.TimelineEventRepository;
@@ -40,7 +35,6 @@ import com.tinusj.ultima.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,8 +46,6 @@ public class DashboardServiceImpl implements DashboardService {
     private final CustomerRepository customerRepository;
     private final CommentRepository commentRepository;
     private final TimelineEventRepository timelineEventRepository;
-    private final ProductRepository productRepository;
-    private final ChatMessageRepository chatMessageRepository;
     private final ActivityRepository activityRepository;
     private final TaskRepository taskRepository;
     private final SubscriptionRepository subscriptionRepository;
@@ -84,10 +76,10 @@ public class DashboardServiceImpl implements DashboardService {
     public AnalyticsMetricsDto getAnalyticsMetrics(LocalDate startDate) {
         double revenue = orderRepository.sumTotalPrice() != null ? orderRepository.sumTotalPrice() : 0.0;
         long potentialReach = customerRepository.count() * 10; // Simplified: 10x customers
-        long pageviews = visitorRepository.count();
+        long pageViews = visitorRepository.count();
         long totalVisits = visitorRepository.count();
         double engagementRate = totalVisits > 0 ? orderRepository.calculateEngagementRate(startDate, totalVisits) : 0.0;
-        return new AnalyticsMetricsDto(revenue, potentialReach, pageviews, engagementRate);
+        return new AnalyticsMetricsDto(revenue, potentialReach, pageViews, engagementRate);
     }
 
 
@@ -120,36 +112,12 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<ProductDto> getProducts() {
-        return productRepository.findAll().stream()
-                .map(p -> new ProductDto(p.getId(), p.getName(), p.getPrice(), p.getStock(), p.getImageUrl()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<ChatMessageDto> getChatMessages() {
-        return chatMessageRepository.findAll().stream()
-                .map(m -> new ChatMessageDto(m.getId(), m.getSender().getUsername(), m.getContent(), m.getSentAt()))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public List<ActivityDto> getActivities() {
         return activityRepository.findAll().stream()
                 .map(a -> new ActivityDto(a.getId(), a.getDescription(), a.getActivityDate()))
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<BestSellerDto> getBestSellers() {
-        return productRepository.findBestSellers().stream()
-                .map(obj -> new BestSellerDto(
-                        ((Number) obj[0]).longValue(),
-                        (String) obj[1],
-                        ((Number) obj[2]).longValue(),
-                        new BigDecimal(obj[3].toString())))
-                .collect(Collectors.toList());
-    }
 
     @Override
     public List<TaskDto> getTasks() {
