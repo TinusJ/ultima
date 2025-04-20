@@ -1,5 +1,6 @@
 package com.tinusj.ultima.service;
 
+import com.tinusj.ultima.dao.dto.ProductCreateDto;
 import com.tinusj.ultima.dao.dto.ProductDto;
 import com.tinusj.ultima.dao.dto.ReviewDto;
 import org.springframework.data.domain.Page;
@@ -14,4 +15,5 @@ public interface EcommerceService {
     ReviewDto submitReview(Long productId, ReviewDto reviewDto);
     List<ProductDto> getRelatedProducts(Long productId);
     Page<ProductDto> listProducts(String category, BigDecimal priceMin, BigDecimal priceMax, String keyword, Pageable pageable);
+    ProductDto createProduct(ProductCreateDto createDto);
 }

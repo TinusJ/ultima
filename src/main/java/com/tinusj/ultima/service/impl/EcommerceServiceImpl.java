@@ -1,5 +1,6 @@
 package com.tinusj.ultima.service.impl;
 
+import com.tinusj.ultima.dao.dto.ProductCreateDto;
 import com.tinusj.ultima.dao.dto.ProductDto;
 import com.tinusj.ultima.dao.dto.ReviewDto;
 import com.tinusj.ultima.dao.entity.ProductEntity;
@@ -112,5 +113,20 @@ public class EcommerceServiceImpl implements EcommerceService {
     public Page<ProductDto> listProducts(String category, BigDecimal priceMin, BigDecimal priceMax, String keyword, Pageable pageable) {
         return productRepository.findProducts(category, priceMin, priceMax, keyword, pageable)
                 .map(this::mapToDto);
+    }
+
+    @Override
+    public ProductDto createProduct(ProductCreateDto createDto) {
+        ProductEntity product = new ProductEntity();
+        product.setName(createDto.name());
+        product.setDescription(createDto.description());
+        product.setPrice(createDto.price());
+        product.setStock(createDto.stock());
+        product.setCategory(createDto.category());
+        product.setImageUrls(createDto.imageUrls());
+        product.setStatus(createDto.status());
+
+        product = productRepository.save(product);
+        return mapToDto(product);
     }
 }
