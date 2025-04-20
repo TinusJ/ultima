@@ -1,5 +1,6 @@
 package com.tinusj.ultima.controller.pub;
 
+import com.tinusj.ultima.dao.dto.ProductCreateDto;
 import com.tinusj.ultima.dao.dto.ProductDto;
 import com.tinusj.ultima.dao.dto.ReviewDto;
 import com.tinusj.ultima.service.EcommerceService;

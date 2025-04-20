@@ -40,13 +40,7 @@ public interface DashboardService {
 
     List<TimelineEventDto> getTimelineEvents();
 
-    List<ProductDto> getProducts();
-
-    List<ChatMessageDto> getChatMessages();
-
     List<ActivityDto> getActivities();
-
-    List<BestSellerDto> getBestSellers();
 
     List<TaskDto> getTasks();
 

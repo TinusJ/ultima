@@ -11,9 +11,14 @@ import java.util.List;
 
 public interface EcommerceService {
     List<ProductDto> getProducts();
+
     ProductDto getProduct(Long id);
+
     ReviewDto submitReview(Long productId, ReviewDto reviewDto);
+
     List<ProductDto> getRelatedProducts(Long productId);
+
     Page<ProductDto> listProducts(String category, BigDecimal priceMin, BigDecimal priceMax, String keyword, Pageable pageable);
+
     ProductDto createProduct(ProductCreateDto createDto);
 }
