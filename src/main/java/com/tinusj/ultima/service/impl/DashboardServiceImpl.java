@@ -4,9 +4,7 @@ import com.tinusj.ultima.dao.dto.ActivityDto;
 import com.tinusj.ultima.dao.dto.AnalyticsMetricsDto;
 import com.tinusj.ultima.dao.dto.AudienceDto;
 import com.tinusj.ultima.dao.dto.BestSellerDto;
-import com.tinusj.ultima.dao.dto.BlogPostDto;
 import com.tinusj.ultima.dao.dto.ChatMessageDto;
-import com.tinusj.ultima.dao.dto.ContactDto;
 import com.tinusj.ultima.dao.dto.DashboardBlogPostDto;
 import com.tinusj.ultima.dao.dto.DashboardMetricsDto;
 import com.tinusj.ultima.dao.dto.DeviceDto;
@@ -29,7 +27,6 @@ import com.tinusj.ultima.repository.ActivityRepository;
 import com.tinusj.ultima.repository.BlogPostRepository;
 import com.tinusj.ultima.repository.ChatMessageRepository;
 import com.tinusj.ultima.repository.CommentRepository;
-import com.tinusj.ultima.repository.ContactRepository;
 import com.tinusj.ultima.repository.CustomerRepository;
 import com.tinusj.ultima.repository.FileRepository;
 import com.tinusj.ultima.repository.FolderRepository;
@@ -39,7 +36,6 @@ import com.tinusj.ultima.repository.SubscriptionRepository;
 import com.tinusj.ultima.repository.TaskRepository;
 import com.tinusj.ultima.repository.TimelineEventRepository;
 import com.tinusj.ultima.repository.VisitorRepository;
-import com.tinusj.ultima.service.BlogService;
 import com.tinusj.ultima.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -55,7 +51,6 @@ public class DashboardServiceImpl implements DashboardService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
     private final CommentRepository commentRepository;
-    private final ContactRepository contactRepository;
     private final TimelineEventRepository timelineEventRepository;
     private final ProductRepository productRepository;
     private final ChatMessageRepository chatMessageRepository;
@@ -66,7 +61,6 @@ public class DashboardServiceImpl implements DashboardService {
     private final BlogPostRepository blogPostRepository;
     private final FileRepository fileRepository;
     private final FolderRepository folderRepository;
-    private final BlogService blogService;
 
     @Override
     public DashboardMetricsDto getDashboardMetrics() {
@@ -96,12 +90,6 @@ public class DashboardServiceImpl implements DashboardService {
         return new AnalyticsMetricsDto(revenue, potentialReach, pageviews, engagementRate);
     }
 
-    @Override
-    public List<ContactDto> getContacts() {
-        return contactRepository.findAll().stream()
-                .map(c -> new ContactDto(c.getId(), c.getName(), c.getEmail(), c.getPhone(), c.getPosition()))
-                .collect(Collectors.toList());
-    }
 
     @Override
     public List<OrderGraphDataDto> getOrderGraphData(LocalDate startDate) {

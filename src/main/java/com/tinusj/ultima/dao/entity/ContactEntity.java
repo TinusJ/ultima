@@ -27,6 +27,6 @@ public class ContactEntity {
     @Column
     private String phone;
 
-    @Column
-    private String position;
+    @Column(columnDefinition = "TEXT")
+    private String message;
 }
