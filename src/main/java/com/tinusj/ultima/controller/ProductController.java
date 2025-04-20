@@ -1,4 +1,4 @@
-package com.tinusj.ultima.controller;
+package com.tinusj.ultima.controller.pub;
 
 import com.tinusj.ultima.dao.dto.ProductDto;
 import com.tinusj.ultima.dao.dto.ReviewDto;
@@ -8,10 +8,15 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -22,7 +27,7 @@ public class ProductController {
 
     private final EcommerceService ecommerceService;
 
-    @Operation(summary = "Get all products", description = "Returns a list of all products for the dashboard.")
+    @Operation(summary = "Get all products for dashboard", description = "Returns a list of all products for the dashboard.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Products retrieved successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated"),
@@ -66,5 +71,24 @@ public class ProductController {
     @GetMapping("/{id}/related")
     public ResponseEntity<List<ProductDto>> getRelatedProducts(@PathVariable Long id) {
         return ResponseEntity.ok(ecommerceService.getRelatedProducts(id));
+    }
+
+    @Operation(summary = "List products with filters and pagination", description = "Returns a paginated list of products with optional filtering by category, price range, and search keyword, and sorting by price or name. Public endpoint.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Products retrieved successfully")
+    })
+    @GetMapping("/list")
+    public ResponseEntity<Page<ProductDto>> listProducts(
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) BigDecimal priceMin,
+            @RequestParam(required = false) BigDecimal priceMax,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        Sort sort = Sort.by(sortDir.equalsIgnoreCase("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return ResponseEntity.ok(ecommerceService.listProducts(category, priceMin, priceMax, keyword, pageable));
     }
 }

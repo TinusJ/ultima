@@ -14,5 +14,6 @@ public record ProductDto(
         String category,
         List<String> imageUrls,
         ProductStatus status,
+        Double averageRating,
         List<ReviewDto> reviews
 ) {}

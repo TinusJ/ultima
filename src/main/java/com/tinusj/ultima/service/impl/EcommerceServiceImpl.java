@@ -11,9 +11,12 @@ import com.tinusj.ultima.repository.ReviewRepository;
 import com.tinusj.ultima.repository.UserRepository;
 import com.tinusj.ultima.service.EcommerceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +30,12 @@ public class EcommerceServiceImpl implements EcommerceService {
     private final UserRepository userRepository;
 
     private ProductDto mapToDto(ProductEntity product) {
+        Double averageRating = product.getReviews().isEmpty() ? null :
+                product.getReviews().stream()
+                        .mapToInt(ReviewEntity::getRating)
+                        .average()
+                        .orElse(0.0);
+
         return new ProductDto(
                 product.getId(),
                 product.getName(),
@@ -36,6 +45,7 @@ public class EcommerceServiceImpl implements EcommerceService {
                 product.getCategory(),
                 product.getImageUrls(),
                 product.getStatus(),
+                averageRating,
                 product.getReviews().stream()
                         .map(r -> new ReviewDto(
                                 r.getId(),
@@ -96,5 +106,11 @@ public class EcommerceServiceImpl implements EcommerceService {
                 .filter(p -> !p.getId().equals(productId) && p.getCategory().equals(product.getCategory()))
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<ProductDto> listProducts(String category, BigDecimal priceMin, BigDecimal priceMax, String keyword, Pageable pageable) {
+        return productRepository.findProducts(category, priceMin, priceMax, keyword, pageable)
+                .map(this::mapToDto);
     }
 }
