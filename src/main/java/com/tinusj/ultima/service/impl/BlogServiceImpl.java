@@ -31,7 +31,7 @@ public class BlogServiceImpl implements BlogService {
 
     private User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
+        return userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
@@ -47,7 +47,7 @@ public class BlogServiceImpl implements BlogService {
                         post.getCategory() != null ? post.getCategory().getId() : null,
                         post.getCategory() != null ? post.getCategory().getName() : null,
                         post.getAuthor().getId(),
-                        post.getAuthor().getUsername(),
+                        post.getAuthor().getEmail(),
                         post.getCreatedAt(),
                         post.getPublishDate(),
                         post.isPublished(), 0L));
@@ -69,7 +69,7 @@ public class BlogServiceImpl implements BlogService {
                 post.getCategory() != null ? post.getCategory().getId() : null,
                 post.getCategory() != null ? post.getCategory().getName() : null,
                 post.getAuthor().getId(),
-                post.getAuthor().getUsername(),
+                post.getAuthor().getEmail(),
                 post.getCreatedAt(),
                 post.getPublishDate(),
                 post.isPublished(), 0L);
@@ -105,7 +105,7 @@ public class BlogServiceImpl implements BlogService {
                 post.getCategory() != null ? post.getCategory().getId() : null,
                 post.getCategory() != null ? post.getCategory().getName() : null,
                 post.getAuthor().getId(),
-                post.getAuthor().getUsername(),
+                post.getAuthor().getEmail(),
                 post.getCreatedAt(),
                 post.getPublishDate(),
                 post.isPublished(), 0L);
@@ -147,7 +147,7 @@ public class BlogServiceImpl implements BlogService {
                 post.getCategory() != null ? post.getCategory().getId() : null,
                 post.getCategory() != null ? post.getCategory().getName() : null,
                 post.getAuthor().getId(),
-                post.getAuthor().getUsername(),
+                post.getAuthor().getEmail(),
                 post.getCreatedAt(),
                 post.getPublishDate(),
                 post.isPublished(), 0L);

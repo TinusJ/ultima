@@ -15,7 +15,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: "api/backend:v0.0.3"
+    image: "ultima/backend:latest"
     container_name: backend
     ports:
       - "8080:8080"
@@ -28,7 +28,7 @@ services:
     build:
       context: E:\Angular\ultima-ng-19.0.0
       target: builder
-    image: "ultima/frontend:v0.0.1"
+    image: "ultima/frontend:latest"
     container_name: frontend
     ports:
       - "80:4200"

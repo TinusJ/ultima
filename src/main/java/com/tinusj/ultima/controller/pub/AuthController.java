@@ -1,24 +1,29 @@
 package com.tinusj.ultima.controller.pub;
 
+import com.tinusj.ultima.dao.dto.ApiResponse;
+import com.tinusj.ultima.dao.dto.ForgotPasswordRequestDto;
+import com.tinusj.ultima.dao.dto.ForgotPasswordResponseDto;
 import com.tinusj.ultima.dao.dto.LoginRequestDto;
 import com.tinusj.ultima.dao.dto.LoginResponseDto;
 import com.tinusj.ultima.dao.dto.RegisterRequestDto;
 import com.tinusj.ultima.dao.dto.RegisterResponseDto;
 import com.tinusj.ultima.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Authentication", description = "API for user registration and login")
+/**
+ * Public endpoints for authentication: register, login, and forgot password.
+ */
+@Tag(name = "Authentication", description = "API for user registration, login, and password recovery")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -28,21 +33,45 @@ public class AuthController {
     private final AuthService authService;
 
     @Operation(summary = "Register a new user", description = "Creates a new user account.")
-    @ApiResponses({@ApiResponse(responseCode = "200", description = "User registered successfully"), @ApiResponse(responseCode = "400", description = "Invalid input data or username/email already exists")})
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "User registered successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input data or username/email already exists")
+    })
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponseDto> register(@Valid @RequestBody RegisterRequestDto registerRequestDTO) {
-        String message = authService.register(registerRequestDTO);
-        return ResponseEntity.ok(new RegisterResponseDto(message));
+    public ResponseEntity<ApiResponse<RegisterResponseDto>> register(
+            @Valid @RequestBody RegisterRequestDto request
+    ) {
+        String msg = authService.register(request);
+        return ResponseEntity.ok(ApiResponse.ok(new RegisterResponseDto(msg)));
     }
 
-    @Operation(summary = "Login a user", description = "Authenticates a user and returns a JWT token.")
-    @ApiResponses({@ApiResponse(responseCode = "200", description = "JWT token"), @ApiResponse(responseCode = "401", description = "Invalid credentials")})
+    @Operation(summary = "User login", description = "Authenticates a user and returns a JWT token.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "JWT token issued"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Invalid credentials")
+    })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto loginRequestDTO) {
+    public ResponseEntity<ApiResponse<LoginResponseDto>> login(
+            @Valid @RequestBody LoginRequestDto request
+    ) {
+        log.info("Login attempt for user: {}", request.email());
+        String token = authService.login(request);
+        var response = new LoginResponseDto(request.email(), token);
+        return ResponseEntity.ok(ApiResponse.ok(response));
+    }
 
-        log.info(loginRequestDTO.toString());
-        String token = authService.login(loginRequestDTO);
-
-        return ResponseEntity.ok(new LoginResponseDto(loginRequestDTO.username(), token));
+    @Operation(summary = "Forgot password", description = "Initiates a password reset flow by sending an email.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Password reset email sent"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid email format"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "No user found with that email")
+    })
+    @PostMapping("/forgot-password")
+    public ResponseEntity<ApiResponse<ForgotPasswordResponseDto>> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequestDto request
+    ) {
+        String msg = authService.forgotPassword(request.email());
+        var response = new ForgotPasswordResponseDto(msg);
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
     }
 }

@@ -31,7 +31,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public TaskResponseDto createTask(TaskCreateDto taskCreateDTO, String username) {
-        User creator = userRepository.findByUsername(username)
+        User creator = userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
 
         TaskEntity taskEntity = new TaskEntity();
@@ -114,7 +114,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public List<TaskResponseDto> getTasksByCreator(String username) {
-        User creator = userRepository.findByUsername(username)
+        User creator = userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
         return taskRepository.findByCreatorId(creator.getId()).stream()
                 .map(this::mapToResponseDTO)
@@ -132,9 +132,9 @@ public class TaskServiceImpl implements TaskService {
                 taskEntity.getCreatedAt(),
                 taskEntity.getUpdatedAt(),
                 taskEntity.getAssignee() != null ? taskEntity.getAssignee().getId() : null,
-                taskEntity.getAssignee() != null ? taskEntity.getAssignee().getUsername() : null,
+                taskEntity.getAssignee() != null ? taskEntity.getAssignee().getEmail() : null,
                 taskEntity.getCreator().getId(),
-                taskEntity.getCreator().getUsername()
+                taskEntity.getCreator().getEmail()
         );
     }
 }

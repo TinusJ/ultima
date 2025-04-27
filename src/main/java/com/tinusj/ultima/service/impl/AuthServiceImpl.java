@@ -30,15 +30,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public String register(RegisterRequestDto registerRequestDTO) {
-        if (userRepository.findByUsername(registerRequestDTO.username()).isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
-        }
         if (userRepository.findByEmail(registerRequestDTO.email()).isPresent()) {
             throw new IllegalArgumentException("Email already exists");
         }
 
         User user = new User();
-        user.setUsername(registerRequestDTO.username());
         user.setEmail(registerRequestDTO.email());
         user.setPassword(passwordEncoder.encode(registerRequestDTO.password()));
         user.setRoles(Set.of(Role.USER));
@@ -51,12 +47,22 @@ public class AuthServiceImpl implements AuthService {
     public String login(LoginRequestDto loginRequestDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginRequestDTO.username(),
+                        loginRequestDTO.email(),
                         loginRequestDTO.password()
                 )
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return jwtTokenProvider.generateToken(authentication);
+    }
+
+    @Override
+    public String forgotPassword(String email) {
+        // TODO: do not do this as this is a sec violation
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        return "";
     }
 }
