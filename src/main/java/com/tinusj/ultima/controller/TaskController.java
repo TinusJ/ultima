@@ -1,9 +1,9 @@
 package com.tinusj.ultima.controller;
 
-import com.tinusj.ultima.dao.dto.TaskCreateDTO;
+import com.tinusj.ultima.dao.dto.TaskCreateDto;
 import com.tinusj.ultima.dao.dto.TaskDto;
-import com.tinusj.ultima.dao.dto.TaskResponseDTO;
-import com.tinusj.ultima.dao.dto.TaskUpdateDTO;
+import com.tinusj.ultima.dao.dto.TaskResponseDto;
+import com.tinusj.ultima.dao.dto.TaskUpdateDto;
 import com.tinusj.ultima.service.DashboardService;
 import com.tinusj.ultima.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,17 +49,17 @@ public class TaskController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Task created successfully",
-                    content = @Content(schema = @Schema(implementation = TaskResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = TaskResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data",
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content)
     })
-    public ResponseEntity<TaskResponseDTO> createTask(
-            @Valid @RequestBody TaskCreateDTO taskCreateDTO,
+    public ResponseEntity<TaskResponseDto> createTask(
+            @Valid @RequestBody TaskCreateDto taskCreateDTO,
             Authentication authentication) {
         String username = authentication.getName(); // Gets username from JWT
-        TaskResponseDTO task = taskService.createTask(taskCreateDTO, username);
+        TaskResponseDto task = taskService.createTask(taskCreateDTO, username);
         return ResponseEntity.ok(task);
     }
 
@@ -69,14 +69,14 @@ public class TaskController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Task found",
-                    content = @Content(schema = @Schema(implementation = TaskResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = TaskResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Task not found",
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> getTaskById(
+    public ResponseEntity<TaskResponseDto> getTaskById(
             @Parameter(description = "ID of the task to retrieve") @PathVariable Long id) {
         return ResponseEntity.ok(taskService.getTaskById(id));
     }
@@ -92,7 +92,7 @@ public class TaskController {
                     content = @Content)
     })
     @GetMapping
-    public ResponseEntity<Page<TaskResponseDTO>> getAllTasks(
+    public ResponseEntity<Page<TaskResponseDto>> getAllTasks(
             @Parameter(description = "Pagination and sorting parameters (e.g., page=0&size=10&sort=title,asc)")
             Pageable pageable) {
         return ResponseEntity.ok(taskService.getAllTasks(pageable));
@@ -104,7 +104,7 @@ public class TaskController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Task updated successfully",
-                    content = @Content(schema = @Schema(implementation = TaskResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = TaskResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "Invalid input data",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Task not found",
@@ -113,9 +113,9 @@ public class TaskController {
                     content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> updateTask(
+    public ResponseEntity<TaskResponseDto> updateTask(
             @Parameter(description = "ID of the task to update") @PathVariable Long id,
-            @Valid @RequestBody TaskUpdateDTO taskUpdateDTO) {
+            @Valid @RequestBody TaskUpdateDto taskUpdateDTO) {
         return ResponseEntity.ok(taskService.updateTask(id, taskUpdateDTO));
     }
 
@@ -149,7 +149,7 @@ public class TaskController {
                     content = @Content)
     })
     @GetMapping("/status/{status}")
-    public ResponseEntity<Page<TaskResponseDTO>> getTasksByStatus(
+    public ResponseEntity<Page<TaskResponseDto>> getTasksByStatus(
             @Parameter(description = "Status to filter by (TODO, IN_PROGRESS, DONE)") @PathVariable String status,
             Pageable pageable) {
         return ResponseEntity.ok(taskService.getTasksByStatus(status, pageable));
@@ -166,7 +166,7 @@ public class TaskController {
                     content = @Content)
     })
     @GetMapping("/priority/{priority}")
-    public ResponseEntity<Page<TaskResponseDTO>> getTasksByPriority(
+    public ResponseEntity<Page<TaskResponseDto>> getTasksByPriority(
             @Parameter(description = "Priority to filter by (LOW, MEDIUM, HIGH)") @PathVariable String priority,
             Pageable pageable) {
         return ResponseEntity.ok(taskService.getTasksByPriority(priority, pageable));
@@ -183,7 +183,7 @@ public class TaskController {
                     content = @Content)
     })
     @GetMapping("/assignee/{assigneeId}")
-    public ResponseEntity<Page<TaskResponseDTO>> getTasksByAssignee(
+    public ResponseEntity<Page<TaskResponseDto>> getTasksByAssignee(
             @Parameter(description = "ID of the assignee") @PathVariable Long assigneeId,
             Pageable pageable) {
         return ResponseEntity.ok(taskService.getTasksByAssignee(assigneeId, pageable));
@@ -195,12 +195,12 @@ public class TaskController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "List of tasks",
-                    content = @Content(schema = @Schema(implementation = TaskResponseDTO.class))),
+                    content = @Content(schema = @Schema(implementation = TaskResponseDto.class))),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content)
     })
     @GetMapping("/creator")
-    public ResponseEntity<List<TaskResponseDTO>> getTasksByCreator(Authentication authentication) {
+    public ResponseEntity<List<TaskResponseDto>> getTasksByCreator(Authentication authentication) {
         String username = authentication.getName();
         return ResponseEntity.ok(taskService.getTasksByCreator(username));
     }

@@ -1,7 +1,7 @@
 package com.tinusj.ultima.service.impl;
 
-import com.tinusj.ultima.dao.dto.LoginRequestDTO;
-import com.tinusj.ultima.dao.dto.RegisterRequestDTO;
+import com.tinusj.ultima.dao.dto.LoginRequestDto;
+import com.tinusj.ultima.dao.dto.RegisterRequestDto;
 import com.tinusj.ultima.dao.entity.User;
 import com.tinusj.ultima.dao.enums.Role;
 import com.tinusj.ultima.repository.UserRepository;
@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    public String register(RegisterRequestDTO registerRequestDTO) {
+    public String register(RegisterRequestDto registerRequestDTO) {
         if (userRepository.findByUsername(registerRequestDTO.username()).isPresent()) {
             throw new IllegalArgumentException("Username already exists");
         }
@@ -48,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String login(LoginRequestDTO loginRequestDTO) {
+    public String login(LoginRequestDto loginRequestDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequestDTO.username(),

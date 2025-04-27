@@ -2,7 +2,7 @@ package com.tinusj.ultima.dao.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
-public record LoginRequestDTO(
+public record LoginRequestDto(
         @NotBlank(message = "Username is mandatory")
         String username,
 

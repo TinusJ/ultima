@@ -1,10 +1,10 @@
 package com.tinusj.ultima.service;
 
-import com.tinusj.ultima.dao.dto.LoginRequestDTO;
-import com.tinusj.ultima.dao.dto.RegisterRequestDTO;
+import com.tinusj.ultima.dao.dto.LoginRequestDto;
+import com.tinusj.ultima.dao.dto.RegisterRequestDto;
 
 public interface AuthService {
-    String register(RegisterRequestDTO registerRequestDTO);
+    String register(RegisterRequestDto registerRequestDTO);
 
-    String login(LoginRequestDTO loginRequestDTO);
+    String login(LoginRequestDto loginRequestDTO);
 }
