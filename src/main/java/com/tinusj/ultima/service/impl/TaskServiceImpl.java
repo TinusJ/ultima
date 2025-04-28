@@ -1,8 +1,8 @@
 package com.tinusj.ultima.service.impl;
 
-import com.tinusj.ultima.dao.dto.TaskCreateDTO;
-import com.tinusj.ultima.dao.dto.TaskResponseDTO;
-import com.tinusj.ultima.dao.dto.TaskUpdateDTO;
+import com.tinusj.ultima.dao.dto.TaskCreateDto;
+import com.tinusj.ultima.dao.dto.TaskResponseDto;
+import com.tinusj.ultima.dao.dto.TaskUpdateDto;
 import com.tinusj.ultima.dao.entity.TaskEntity;
 import com.tinusj.ultima.dao.entity.User;
 import com.tinusj.ultima.dao.enums.TaskPriority;
@@ -30,8 +30,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public TaskResponseDTO createTask(TaskCreateDTO taskCreateDTO, String username) {
-        User creator = userRepository.findByUsername(username)
+    public TaskResponseDto createTask(TaskCreateDto taskCreateDTO, String username) {
+        User creator = userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
 
         TaskEntity taskEntity = new TaskEntity();
@@ -53,20 +53,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskResponseDTO getTaskById(Long id) {
+    public TaskResponseDto getTaskById(Long id) {
         TaskEntity taskEntity = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found: " + id));
         return mapToResponseDTO(taskEntity);
     }
 
     @Override
-    public Page<TaskResponseDTO> getAllTasks(Pageable pageable) {
+    public Page<TaskResponseDto> getAllTasks(Pageable pageable) {
         return taskRepository.findAll(pageable).map(this::mapToResponseDTO);
     }
 
     @Override
     @Transactional
-    public TaskResponseDTO updateTask(Long id, TaskUpdateDTO taskUpdateDTO) {
+    public TaskResponseDto updateTask(Long id, TaskUpdateDto taskUpdateDTO) {
         TaskEntity taskEntity = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task not found: " + id));
 
@@ -98,31 +98,31 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Page<TaskResponseDTO> getTasksByStatus(String status, Pageable pageable) {
+    public Page<TaskResponseDto> getTasksByStatus(String status, Pageable pageable) {
         return taskRepository.findByStatus(status, pageable).map(this::mapToResponseDTO);
     }
 
     @Override
-    public Page<TaskResponseDTO> getTasksByPriority(String priority, Pageable pageable) {
+    public Page<TaskResponseDto> getTasksByPriority(String priority, Pageable pageable) {
         return taskRepository.findByPriority(priority, pageable).map(this::mapToResponseDTO);
     }
 
     @Override
-    public Page<TaskResponseDTO> getTasksByAssignee(Long assigneeId, Pageable pageable) {
+    public Page<TaskResponseDto> getTasksByAssignee(Long assigneeId, Pageable pageable) {
         return taskRepository.findByAssigneeId(assigneeId, pageable).map(this::mapToResponseDTO);
     }
 
     @Override
-    public List<TaskResponseDTO> getTasksByCreator(String username) {
-        User creator = userRepository.findByUsername(username)
+    public List<TaskResponseDto> getTasksByCreator(String username) {
+        User creator = userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
         return taskRepository.findByCreatorId(creator.getId()).stream()
                 .map(this::mapToResponseDTO)
                 .toList();
     }
 
-    private TaskResponseDTO mapToResponseDTO(TaskEntity taskEntity) {
-        return new TaskResponseDTO(
+    private TaskResponseDto mapToResponseDTO(TaskEntity taskEntity) {
+        return new TaskResponseDto(
                 taskEntity.getId(),
                 taskEntity.getTitle(),
                 taskEntity.getDescription(),
@@ -132,9 +132,9 @@ public class TaskServiceImpl implements TaskService {
                 taskEntity.getCreatedAt(),
                 taskEntity.getUpdatedAt(),
                 taskEntity.getAssignee() != null ? taskEntity.getAssignee().getId() : null,
-                taskEntity.getAssignee() != null ? taskEntity.getAssignee().getUsername() : null,
+                taskEntity.getAssignee() != null ? taskEntity.getAssignee().getEmail() : null,
                 taskEntity.getCreator().getId(),
-                taskEntity.getCreator().getUsername()
+                taskEntity.getCreator().getEmail()
         );
     }
 }

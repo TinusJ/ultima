@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 
-public record TaskCreateDTO(
+public record TaskCreateDto(
         @NotBlank(message = "Title is mandatory") @Size(max = 100, message = "Title must be less than 100 characters") String title,
         @Size(max = 500, message = "Description must be less than 500 characters") String description,
         @NotBlank(message = "Status is mandatory") String status,

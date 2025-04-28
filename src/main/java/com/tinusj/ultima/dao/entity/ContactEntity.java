@@ -29,4 +29,10 @@ public class ContactEntity {
 
     @Column(columnDefinition = "TEXT")
     private String message;
+
+    @Column
+    private String avatar;
+
+    @Column(columnDefinition = "TEXT")
+    private String tags;
 }

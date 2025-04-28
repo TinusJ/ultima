@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: "postgres"
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - E:\Data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: "@Tinus"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+
+  server_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: "ultima/backend:latest"
+    container_name: backend
+    ports:
+      - "8080:8080"
+    environment:
+      - "SPRING_PROFILES_ACTIVE=docker"
+    depends_on:
+      - postgres
+
+  web:
+    build:
+      context: E:\Angular\ultima-ng-19.0.0
+      target: builder
+    image: "ultima/frontend:latest"
+    container_name: frontend
+    ports:
+      - "80:4200"

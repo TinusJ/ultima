@@ -31,7 +31,7 @@ public class ChatServiceImpl implements ChatService {
 
     private User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
+        return userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
@@ -47,8 +47,8 @@ public class ChatServiceImpl implements ChatService {
                                 ? conv.getParticipant2().getId()
                                 : conv.getParticipant1().getId(),
                         conv.getParticipant1().getId().equals(currentUser.getId())
-                                ? conv.getParticipant2().getUsername()
-                                : conv.getParticipant1().getUsername(),
+                                ? conv.getParticipant2().getEmail()
+                                : conv.getParticipant1().getEmail(),
                         conv.getLastMessage(),
                         conv.getLastMessageAt()))
                 .collect(Collectors.toList());
@@ -78,7 +78,7 @@ public class ChatServiceImpl implements ChatService {
             return new ConversationDto(
                     conv.getId(),
                     userId,
-                    otherUser.getUsername(),
+                    otherUser.getEmail(),
                     conv.getLastMessage(),
                     conv.getLastMessageAt());
         }
@@ -92,7 +92,7 @@ public class ChatServiceImpl implements ChatService {
         return new ConversationDto(
                 conversation.getId(),
                 userId,
-                otherUser.getUsername(),
+                otherUser.getEmail(),
                 null,
                 null);
     }
@@ -111,7 +111,7 @@ public class ChatServiceImpl implements ChatService {
         return chatMessageRepository.findByConversationId(conversationId).stream()
                 .map(msg -> new ChatMessageDto(
                         msg.getId(),
-                        msg.getSender().getUsername(),
+                        msg.getSender().getEmail(),
                         msg.getContent(),
                         msg.getSentAt()))
                 .collect(Collectors.toList());
@@ -141,7 +141,7 @@ public class ChatServiceImpl implements ChatService {
 
         ChatMessageDto savedMessageDto = new ChatMessageDto(
                 message.getId(),
-                message.getSender().getUsername(),
+                message.getSender().getEmail(),
                 message.getContent(),
                 message.getSentAt());
 
@@ -156,8 +156,8 @@ public class ChatServiceImpl implements ChatService {
         User currentUser = getCurrentUser();
         return userRepository.findAll().stream()
                 .filter(user -> !user.getId().equals(currentUser.getId()))
-                .filter(user -> user.getUsername().toLowerCase().contains(query.toLowerCase()))
-                .map(user -> new UserSearchDto(user.getId(), user.getUsername()))
+                .filter(user -> user.getEmail().toLowerCase().contains(query.toLowerCase()))
+                .map(user -> new UserSearchDto(user.getId(), user.getEmail()))
                 .collect(Collectors.toList());
     }
 }

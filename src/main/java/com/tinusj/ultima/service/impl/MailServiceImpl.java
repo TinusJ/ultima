@@ -34,7 +34,7 @@ public class MailServiceImpl implements MailService {
 
     private User getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByUsername(username)
+        return userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
@@ -74,7 +74,7 @@ public class MailServiceImpl implements MailService {
                 .map(email -> new EmailDto(
                         email.getId(),
                         email.getSender().getId(),
-                        email.getSender().getUsername(),
+                        email.getSender().getEmail(),
                         email.getRecipientsTo().stream().map(User::getId).collect(Collectors.toSet()),
                         email.getRecipientsCc().stream().map(User::getId).collect(Collectors.toSet()),
                         email.getRecipientsBcc().stream().map(User::getId).collect(Collectors.toSet()),
@@ -100,7 +100,7 @@ public class MailServiceImpl implements MailService {
         return new EmailDto(
                 email.getId(),
                 email.getSender().getId(),
-                email.getSender().getUsername(),
+                email.getSender().getEmail(),
                 email.getRecipientsTo().stream().map(User::getId).collect(Collectors.toSet()),
                 email.getRecipientsCc().stream().map(User::getId).collect(Collectors.toSet()),
                 email.getRecipientsBcc().stream().map(User::getId).collect(Collectors.toSet()),
@@ -182,7 +182,7 @@ public class MailServiceImpl implements MailService {
                 messagingTemplate.convertAndSend("/topic/mail/" + recipient.getId(), new EmailDto(
                         recipientEmail.getId(),
                         recipientEmail.getSender().getId(),
-                        recipientEmail.getSender().getUsername(),
+                        recipientEmail.getSender().getEmail(),
                         recipientEmail.getRecipientsTo().stream().map(User::getId).collect(Collectors.toSet()),
                         recipientEmail.getRecipientsCc().stream().map(User::getId).collect(Collectors.toSet()),
                         recipientEmail.getRecipientsBcc().stream().map(User::getId).collect(Collectors.toSet()),
@@ -198,7 +198,7 @@ public class MailServiceImpl implements MailService {
         return new EmailDto(
                 email.getId(),
                 email.getSender().getId(),
-                email.getSender().getUsername(),
+                email.getSender().getEmail(),
                 email.getRecipientsTo().stream().map(User::getId).collect(Collectors.toSet()),
                 email.getRecipientsCc().stream().map(User::getId).collect(Collectors.toSet()),
                 email.getRecipientsBcc().stream().map(User::getId).collect(Collectors.toSet()),
@@ -228,7 +228,7 @@ public class MailServiceImpl implements MailService {
         return new EmailDto(
                 email.getId(),
                 email.getSender().getId(),
-                email.getSender().getUsername(),
+                email.getSender().getEmail(),
                 email.getRecipientsTo().stream().map(User::getId).collect(Collectors.toSet()),
                 email.getRecipientsCc().stream().map(User::getId).collect(Collectors.toSet()),
                 email.getRecipientsBcc().stream().map(User::getId).collect(Collectors.toSet()),
@@ -252,7 +252,7 @@ public class MailServiceImpl implements MailService {
         return new EmailDto(
                 email.getId(),
                 email.getSender().getId(),
-                email.getSender().getUsername(),
+                email.getSender().getEmail(),
                 email.getRecipientsTo().stream().map(User::getId).collect(Collectors.toSet()),
                 email.getRecipientsCc().stream().map(User::getId).collect(Collectors.toSet()),
                 email.getRecipientsBcc().stream().map(User::getId).collect(Collectors.toSet()),

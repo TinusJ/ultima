@@ -54,7 +54,7 @@ public class EcommerceServiceImpl implements EcommerceService {
                                 r.getComment(),
                                 r.getCreatedAt(),
                                 r.getUser().getId(),
-                                r.getUser().getUsername()))
+                                r.getUser().getEmail()))
                         .collect(Collectors.toList()));
     }
 
@@ -78,7 +78,7 @@ public class EcommerceServiceImpl implements EcommerceService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + productId));
 
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username)
+        User user = userRepository.findByEmail(username)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found: " + username));
 
         ReviewEntity review = new ReviewEntity();
@@ -96,7 +96,7 @@ public class EcommerceServiceImpl implements EcommerceService {
                 review.getComment(),
                 review.getCreatedAt(),
                 review.getUser().getId(),
-                review.getUser().getUsername());
+                review.getUser().getEmail());
     }
 
     @Override

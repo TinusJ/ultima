@@ -6,10 +6,12 @@ import com.tinusj.ultima.dao.entity.ContactEntity;
 import com.tinusj.ultima.repository.ContactRepository;
 import com.tinusj.ultima.service.ContactService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -18,15 +20,16 @@ public class ContactServiceImpl implements ContactService {
     private final ContactRepository contactRepository;
 
     @Override
-    public List<ContactDto> getContacts() {
-        return contactRepository.findAll().stream()
-                .map(c -> new ContactDto(
-                        c.getId(),
-                        c.getName(),
-                        c.getEmail(),
-                        c.getPhone(),
-                        c.getMessage()))
-                .collect(Collectors.toList());
+    public Page<ContactDto> getContacts(Pageable pageable) {
+        return contactRepository.findAll(pageable).map(c -> new ContactDto(
+                c.getId(),
+                c.getName(),
+                c.getEmail(),
+                c.getPhone(),
+                c.getMessage(),
+                c.getAvatar(),
+                c.getTags() != null ? Arrays.asList(c.getTags().split(",")) : List.of()
+        ));
     }
 
     @Override
@@ -43,6 +46,8 @@ public class ContactServiceImpl implements ContactService {
                 contact.getName(),
                 contact.getEmail(),
                 contact.getPhone(),
-                contact.getMessage());
+                contact.getMessage(),
+                "",
+                List.of());
     }
 }

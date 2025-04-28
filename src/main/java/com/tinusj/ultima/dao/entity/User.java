@@ -35,10 +35,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Username is mandatory")
-    @Column(unique = true)
-    private String username;
-
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Email should be valid")
     @Column(unique = true)

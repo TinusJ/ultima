@@ -3,7 +3,7 @@ package com.tinusj.ultima.dao.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record TaskResponseDTO(
+public record TaskResponseDto(
         Long id,
         String title,
         String description,
