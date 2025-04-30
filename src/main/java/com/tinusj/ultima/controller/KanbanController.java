@@ -1,12 +1,11 @@
 package com.tinusj.ultima.controller;
 
+import com.tinusj.ultima.dao.dto.ApiResponse;
 import com.tinusj.ultima.dao.dto.KanbanBoardDto;
 import com.tinusj.ultima.dao.dto.KanbanListDto;
 import com.tinusj.ultima.dao.dto.KanbanTaskDto;
 import com.tinusj.ultima.service.KanbanService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -32,87 +31,87 @@ public class KanbanController {
     private final KanbanService kanbanService;
 
     @Operation(summary = "Get authenticated user's Kanban boards", description = "Returns a list of Kanban boards owned by the authenticated user.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Boards retrieved successfully"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Boards retrieved successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
     })
     @GetMapping("/boards")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<KanbanBoardDto>> getBoards() {
-        return ResponseEntity.ok(kanbanService.getBoards());
+    public ResponseEntity<ApiResponse<List<KanbanBoardDto>>> getBoards() {
+        return ResponseEntity.ok(ApiResponse.ok(kanbanService.getBoards()));
     }
 
     @Operation(summary = "Create a new Kanban board", description = "Creates a new Kanban board with default lists (To Do, In Progress, Done).")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Board created successfully"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Board created successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
     })
     @PostMapping("/boards")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<KanbanBoardDto> createBoard(@RequestBody KanbanBoardDto boardDto) {
-        return ResponseEntity.ok(kanbanService.createBoard(boardDto));
+    public ResponseEntity<ApiResponse<KanbanBoardDto>> createBoard(@RequestBody KanbanBoardDto boardDto) {
+        return ResponseEntity.ok(ApiResponse.ok(kanbanService.createBoard(boardDto)));
     }
 
     @Operation(summary = "Get Kanban board details", description = "Returns details of a Kanban board, including lists and tasks.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Board retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Board not found"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Board retrieved successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Board not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
     })
     @GetMapping("/boards/{boardId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<KanbanBoardDto> getBoard(@PathVariable Long boardId) {
-        return ResponseEntity.ok(kanbanService.getBoard(boardId));
+    public ResponseEntity<ApiResponse<KanbanBoardDto>> getBoard(@PathVariable Long boardId) {
+        return ResponseEntity.ok(ApiResponse.ok(kanbanService.getBoard(boardId)));
     }
 
     @Operation(summary = "Create a new Kanban list", description = "Creates a new list in the specified Kanban board.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "List created successfully"),
-            @ApiResponse(responseCode = "404", description = "Board not found"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "List created successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Board not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
     })
     @PostMapping("/boards/{boardId}/lists")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<KanbanListDto> createList(
+    public ResponseEntity<ApiResponse<KanbanListDto>> createList(
             @PathVariable Long boardId,
             @RequestBody KanbanListDto listDto) {
-        return ResponseEntity.ok(kanbanService.createList(boardId, listDto));
+        return ResponseEntity.ok(ApiResponse.ok(kanbanService.createList(boardId, listDto)));
     }
 
     @Operation(summary = "Create a new Kanban task", description = "Creates a new task in the specified Kanban list.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Task created successfully"),
-            @ApiResponse(responseCode = "404", description = "Board or list not found"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Task created successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Board or list not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
     })
     @PostMapping("/boards/{boardId}/tasks")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<KanbanTaskDto> createTask(
+    public ResponseEntity<ApiResponse<KanbanTaskDto>> createTask(
             @PathVariable Long boardId,
             @RequestBody KanbanTaskDto taskDto) {
-        return ResponseEntity.ok(kanbanService.createTask(boardId, taskDto));
+        return ResponseEntity.ok(ApiResponse.ok(kanbanService.createTask(boardId, taskDto)));
     }
 
     @Operation(summary = "Update a Kanban task", description = "Updates the details of a task (title, description, assignees).")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Task updated successfully"),
-            @ApiResponse(responseCode = "404", description = "Task or board not found"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Task updated successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Task or board not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
     })
     @PutMapping("/boards/{boardId}/tasks/{taskId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<KanbanTaskDto> updateTask(
+    public ResponseEntity<ApiResponse<KanbanTaskDto>> updateTask(
             @PathVariable Long boardId,
             @PathVariable Long taskId,
             @RequestBody KanbanTaskDto taskDto) {
-        return ResponseEntity.ok(kanbanService.updateTask(boardId, taskId, taskDto));
+        return ResponseEntity.ok(ApiResponse.ok(kanbanService.updateTask(boardId, taskId, taskDto)));
     }
 
     @Operation(summary = "Delete a Kanban task", description = "Deletes a task from the specified Kanban board.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "Task deleted successfully"),
-            @ApiResponse(responseCode = "404", description = "Task or board not found"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Task deleted successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Task or board not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
     })
     @DeleteMapping("/boards/{boardId}/tasks/{taskId}")
     @PreAuthorize("isAuthenticated()")
@@ -124,17 +123,17 @@ public class KanbanController {
     }
 
     @Operation(summary = "Move a Kanban task to a different list", description = "Moves a task to a different Kanban list within the same board.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Task moved successfully"),
-            @ApiResponse(responseCode = "404", description = "Task, list, or board not found"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Task moved successfully"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Task, list, or board not found"),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "Unauthorized - User not authenticated")
     })
     @PutMapping("/boards/{boardId}/tasks/{taskId}/move")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<KanbanTaskDto> moveTask(
+    public ResponseEntity<ApiResponse<KanbanTaskDto>> moveTask(
             @PathVariable Long boardId,
             @PathVariable Long taskId,
             @RequestParam Long newListId) {
-        return ResponseEntity.ok(kanbanService.moveTask(boardId, taskId, newListId));
+        return ResponseEntity.ok(ApiResponse.ok(kanbanService.moveTask(boardId, taskId, newListId)));
     }
 }

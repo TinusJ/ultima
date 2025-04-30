@@ -9,6 +9,7 @@ import com.tinusj.ultima.security.JwtTokenProvider;
 import com.tinusj.ultima.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,7 @@ import java.util.Set;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Profile("!firebase")
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
