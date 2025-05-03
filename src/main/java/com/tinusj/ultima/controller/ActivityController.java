@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/activities")
+@RequestMapping("/v1/activities")
 @PreAuthorize("isAuthenticated()")
 public class ActivityController {
     private final DashboardService dashboardService;

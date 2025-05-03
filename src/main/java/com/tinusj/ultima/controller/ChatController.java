@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/chat")
+@RequestMapping("/v1/chat")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class ChatController {

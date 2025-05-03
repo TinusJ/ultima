@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/revenue")
+@RequestMapping("/v1/revenue")
 public class RevenueController {
     private final DashboardService dashboardService;
 

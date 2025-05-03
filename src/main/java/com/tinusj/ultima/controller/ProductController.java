@@ -27,7 +27,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/v1/products")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class ProductController {

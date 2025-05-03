@@ -1,6 +1,7 @@
 package com.tinusj.ultima.service.impl;
 
 import com.tinusj.ultima.dao.dto.LoginRequestDto;
+import com.tinusj.ultima.dao.dto.LoginRequestEmailDto;
 import com.tinusj.ultima.dao.dto.RegisterRequestDto;
 import com.tinusj.ultima.dao.entity.User;
 import com.tinusj.ultima.dao.enums.Role;
@@ -59,12 +60,23 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public String login(LoginRequestEmailDto loginRequestEmailDto) {
+        //TODO: fully implement this
+        return "";
+    }
+
+    @Override
     public String forgotPassword(String email) {
         // TODO: do not do this as this is a sec violation
         if (userRepository.findByEmail(email).isPresent()) {
             throw new IllegalArgumentException("Email already exists");
         }
 
+        return "";
+    }
+
+    @Override
+    public String verifyEmail(String email) {
         return "";
     }
 }

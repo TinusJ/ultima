@@ -35,7 +35,7 @@ import java.util.List;
 @Tag(name = "Tasks", description = "API for managing tasks in the Task List application")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/tasks")
+@RequestMapping("/v1/tasks")
 @SecurityRequirement(name = "bearerAuth")
 public class TaskController {
     private final DashboardService dashboardService;

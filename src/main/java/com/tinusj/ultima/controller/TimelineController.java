@@ -15,7 +15,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/timeline")
+@RequestMapping("/v1/timeline")
 public class TimelineController {
     private final DashboardService dashboardService;
 

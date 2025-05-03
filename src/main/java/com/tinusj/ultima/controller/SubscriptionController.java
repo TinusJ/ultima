@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/subscriptions")
+@RequestMapping("/v1/subscriptions")
 public class SubscriptionController {
     private final DashboardService dashboardService;
 

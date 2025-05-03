@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/mail")
+@RequestMapping("/v1/mail")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class MailController {

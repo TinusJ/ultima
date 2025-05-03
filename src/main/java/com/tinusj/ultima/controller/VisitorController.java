@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/visitors")
+@RequestMapping("/v1/visitors")
 public class VisitorController {
     private final DashboardService dashboardService;
 

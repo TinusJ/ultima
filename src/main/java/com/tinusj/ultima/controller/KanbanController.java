@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/kanban")
+@RequestMapping("/v1/kanban")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class KanbanController {

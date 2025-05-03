@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/dashboard/analytics")
+@RequestMapping("/v1/dashboard/analytics")
 public class AnalyticsDashboardController {
     private final DashboardService dashboardService;
 

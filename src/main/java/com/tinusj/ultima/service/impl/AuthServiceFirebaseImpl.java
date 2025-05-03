@@ -1,25 +1,26 @@
 package com.tinusj.ultima.service.impl;
 
-
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.tinusj.ultima.dao.dto.LoginRequestDto;
+import com.tinusj.ultima.dao.dto.LoginRequestEmailDto;
 import com.tinusj.ultima.dao.dto.RegisterRequestDto;
 import com.tinusj.ultima.service.AuthService;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Slf4j
 @Service
-@Profile("firebase")
 @RequiredArgsConstructor
 public class AuthServiceFirebaseImpl implements AuthService {
 
@@ -28,7 +29,6 @@ public class AuthServiceFirebaseImpl implements AuthService {
     @Override
     public String register(RegisterRequestDto registerRequestDTO) {
         try {
-            // Create a Firebase user
             CreateRequest request = new CreateRequest()
                     .setEmail(registerRequestDTO.email())
                     .setPassword(registerRequestDTO.password())
@@ -36,29 +36,22 @@ public class AuthServiceFirebaseImpl implements AuthService {
                     .setEmailVerified(false)
                     .setDisabled(false);
 
-            // Additional user properties if needed
             if (registerRequestDTO.phoneNumber() != null) {
                 request.setPhoneNumber(registerRequestDTO.phoneNumber());
             }
 
-            // Create the user in Firebase
             UserRecord userRecord = firebaseAuth.createUser(request);
-
             log.info("Successfully created new user: {}", userRecord.getUid());
 
-            // You might want to add custom claims to the user
+            // Optionally set custom claims:
             // firebaseAuth.setCustomUserClaims(userRecord.getUid(), Map.of("role", "USER"));
 
-            // Create a custom token for the new user
             return firebaseAuth.createCustomToken(userRecord.getUid());
         } catch (FirebaseAuthException e) {
             log.error("Error registering user: {}", e.getMessage());
-
-            // Handle specific error cases
-            if (e.getAuthErrorCode().name().equals("EMAIL_ALREADY_EXISTS")) {
+            if ("EMAIL_ALREADY_EXISTS".equals(e.getAuthErrorCode().name())) {
                 throw new RuntimeException("Email already in use");
             }
-
             throw new RuntimeException("Registration failed: " + e.getMessage());
         }
     }
@@ -66,30 +59,13 @@ public class AuthServiceFirebaseImpl implements AuthService {
     @Override
     public String login(LoginRequestDto loginRequestDTO) {
         try {
-            // In Firebase, we typically don't directly verify passwords on the server
-            // The client would use Firebase SDK to sign in and get a token
-            // This method demonstrates a server-side approach for special cases
-
-            // Get the user by email
             UserRecord userRecord = firebaseAuth.getUserByEmail(loginRequestDTO.email());
-
-            // Note: Firebase Admin SDK doesn't provide direct password verification
-            // In a real application, the client would handle authentication directly with Firebase
-            // This is a workaround for server-side login (not recommended for production)
-
-            // Create a custom token for the authenticated user
-            String customToken = firebaseAuth.createCustomToken(userRecord.getUid());
-
-            log.info("Successfully created custom token for user: {}", userRecord.getUid());
-
-            return customToken;
+            return firebaseAuth.createCustomToken(userRecord.getUid());
         } catch (FirebaseAuthException e) {
             log.error("Error during login: {}", e.getMessage());
-
-            if (e.getAuthErrorCode().name().equals("USER_NOT_FOUND")) {
-                throw new RuntimeException("Invalid credentials");
+            if ("USER_NOT_FOUND".equals(e.getAuthErrorCode().name())) {
+                throw new BadCredentialsException("Invalid credentials");
             }
-
             throw new RuntimeException("Authentication failed: " + e.getMessage());
         }
     }
@@ -97,28 +73,59 @@ public class AuthServiceFirebaseImpl implements AuthService {
     @Override
     public String forgotPassword(@NotBlank @Email String email) {
         try {
-            // Check if the user exists
             UserRecord userRecord = firebaseAuth.getUserByEmail(email);
-
-            // Generate password reset link
             String link = firebaseAuth.generatePasswordResetLink(email);
-
-            // In a real application, you would send this link to the user's email
-            // using an email service
             log.info("Password reset link generated for user: {}", userRecord.getUid());
-
-            // Return a reference code for tracking (don't return the actual link in production)
             return UUID.randomUUID().toString();
         } catch (FirebaseAuthException e) {
             log.error("Error generating password reset link: {}", e.getMessage());
-
-            if (e.getAuthErrorCode().name().equals("USER_NOT_FOUND")) {
-                // For security reasons, don't reveal if the email exists or not
-                // Just return a generic success message
+            if ("USER_NOT_FOUND".equals(e.getAuthErrorCode().name())) {
+                // For security, do not reveal if the user exists or not
                 return UUID.randomUUID().toString();
             }
-
             throw new RuntimeException("Failed to process password reset: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Generate an email sign-in link for passwordless authentication (web app).
+     */
+    @Override
+    public String login(LoginRequestEmailDto loginRequestEmailDto) {
+        try {
+            ActionCodeSettings actionCodeSettings = ActionCodeSettings.builder()
+                    .setUrl("https://tinusj.com")
+                    .setHandleCodeInApp(true)
+                    .build();
+
+            String signInLink = firebaseAuth.generateSignInWithEmailLink(loginRequestEmailDto.email(), actionCodeSettings);
+            log.info("Email sign-in link generated for user: {}", loginRequestEmailDto.email());
+
+            // In production, send this signInLink via your email service
+            return signInLink;
+        } catch (FirebaseAuthException e) {
+            log.error("Error generating email sign-in link: {}", e.getMessage());
+            throw new RuntimeException("Failed to generate email sign-in link: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public String verifyEmail(@NotBlank @Email String email) {
+        try {
+            ActionCodeSettings actionCodeSettings = ActionCodeSettings.builder()
+                    // Your web app's URL, where users will complete verification
+                    .setUrl("https://tinusj.com/verifyEmailCallback")
+                    .setHandleCodeInApp(true)
+                    .build();
+
+            String verificationLink = firebaseAuth.generateEmailVerificationLink(email, actionCodeSettings);
+            log.info("Email verification link generated for user: {}", email);
+
+            // In production, send this verification link via your email service
+            return verificationLink;
+        } catch (FirebaseAuthException e) {
+            log.error("Error generating email verification link: {}", e.getMessage());
+            throw new RuntimeException("Failed to generate email verification link: " + e.getMessage());
         }
     }
 }

@@ -36,7 +36,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/files")
+@RequestMapping("/v1/files")
 public class FileController {
     private final DashboardService dashboardService;
     private final FileStorageService fileStorageService;

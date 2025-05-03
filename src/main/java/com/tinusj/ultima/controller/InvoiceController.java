@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/invoices")
+@RequestMapping("/v1/invoices")
 @RequiredArgsConstructor
 @SecurityRequirement(name = "bearerAuth")
 public class InvoiceController {

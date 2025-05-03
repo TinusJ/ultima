@@ -1,10 +1,14 @@
 package com.tinusj.ultima.controller.pub;
 
 import com.tinusj.ultima.dao.dto.ApiResponse;
+import com.tinusj.ultima.dao.dto.EmailVerifyRequestDto;
+import com.tinusj.ultima.dao.dto.EmailVerifyResponseDto;
 import com.tinusj.ultima.dao.dto.ForgotPasswordRequestDto;
 import com.tinusj.ultima.dao.dto.ForgotPasswordResponseDto;
 import com.tinusj.ultima.dao.dto.LoginRequestDto;
+import com.tinusj.ultima.dao.dto.LoginRequestEmailDto;
 import com.tinusj.ultima.dao.dto.LoginResponseDto;
+import com.tinusj.ultima.dao.dto.LoginResponseEmailDto;
 import com.tinusj.ultima.dao.dto.RegisterRequestDto;
 import com.tinusj.ultima.dao.dto.RegisterResponseDto;
 import com.tinusj.ultima.service.AuthService;
@@ -27,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/public/auth")
+@RequestMapping("/v1/public/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -55,9 +59,7 @@ public class AuthController {
             @Valid @RequestBody LoginRequestDto request
     ) {
         log.info("Login attempt for user: {}", request.email());
-        String token = authService.login(request);
-        var response = new LoginResponseDto(request.email(), token);
-        return ResponseEntity.ok(ApiResponse.ok(response));
+        return ResponseEntity.ok(ApiResponse.ok(new LoginResponseDto(request.email(), authService.login(request))));
     }
 
     @Operation(summary = "Forgot password", description = "Initiates a password reset flow by sending an email.")
@@ -73,5 +75,28 @@ public class AuthController {
         String msg = authService.forgotPassword(request.email());
         var response = new ForgotPasswordResponseDto(msg);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(response));
+    }
+
+    @Operation(summary = "Email Login", description = "Initiates a email login link by sending an email.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "JWT token issued")
+    })
+    @PostMapping("/generate-email-sign-in-link")
+    public ResponseEntity<ApiResponse<LoginResponseEmailDto>> login(
+            @Valid @RequestBody LoginRequestEmailDto request
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponse.ok(new LoginResponseEmailDto(authService.login(request))));
+    }
+
+    @Operation(summary = "Generate email verification link",
+            description = "Sends a link to verify the user's email.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Verification link generated successfully."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid email address.")
+    })
+    @PostMapping("/verify-email")
+    public ResponseEntity<ApiResponse<EmailVerifyResponseDto>> verifyEmail(@Valid @RequestBody EmailVerifyRequestDto request) {
+        return ResponseEntity.ok(ApiResponse.ok(new EmailVerifyResponseDto(authService.verifyEmail(request.email()))));
     }
 }

@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/orders")
+@RequestMapping("/v1/orders")
 public class OrderController {
     private final DashboardService dashboardService;
 
