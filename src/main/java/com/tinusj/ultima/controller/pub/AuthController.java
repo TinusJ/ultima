@@ -11,14 +11,18 @@ import com.tinusj.ultima.dao.dto.LoginResponseDto;
 import com.tinusj.ultima.dao.dto.LoginResponseEmailDto;
 import com.tinusj.ultima.dao.dto.RegisterRequestDto;
 import com.tinusj.ultima.dao.dto.RegisterResponseDto;
+import com.tinusj.ultima.dao.dto.TokenValidationResponse;
 import com.tinusj.ultima.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -98,5 +102,31 @@ public class AuthController {
     @PostMapping("/verify-email")
     public ResponseEntity<ApiResponse<EmailVerifyResponseDto>> verifyEmail(@Valid @RequestBody EmailVerifyRequestDto request) {
         return ResponseEntity.ok(ApiResponse.ok(new EmailVerifyResponseDto(authService.verifyEmail(request.email()))));
+    }
+
+    @Operation(
+            summary = "Validate JWT Token",
+            description = "Validates the JWT token provided in the Authorization header"
+    )
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "Token is valid",
+                    content = @Content(schema = @Schema(implementation = TokenValidationResponse.class))
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "401",
+                    description = "Invalid or expired token",
+                    content = @Content
+            )
+    })
+    @GetMapping("/validate-token")
+    public ResponseEntity<ApiResponse<TokenValidationResponse>> validateToken() {
+        // The actual token is extracted in the JwtAuthenticationFilter
+        // If this endpoint is reached, it means the token is valid
+        // as it would have been rejected by the filter otherwise
+
+        TokenValidationResponse response = authService.validateCurrentToken();
+        return ResponseEntity.ok(ApiResponse.ok(response));
     }
 }

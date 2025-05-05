@@ -8,23 +8,32 @@ import com.google.firebase.auth.UserRecord.CreateRequest;
 import com.tinusj.ultima.dao.dto.LoginRequestDto;
 import com.tinusj.ultima.dao.dto.LoginRequestEmailDto;
 import com.tinusj.ultima.dao.dto.RegisterRequestDto;
+import com.tinusj.ultima.dao.dto.TokenValidationResponse;
+import com.tinusj.ultima.security.JwtTokenProvider;
 import com.tinusj.ultima.service.AuthService;
+import com.tinusj.ultima.service.JwtService;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Profile("firebase")
 public class AuthServiceFirebaseImpl implements AuthService {
 
     private final FirebaseAuth firebaseAuth;
+    private final JwtService jwtService;
 
     @Override
     public String register(RegisterRequestDto registerRequestDTO) {
@@ -44,7 +53,7 @@ public class AuthServiceFirebaseImpl implements AuthService {
             log.info("Successfully created new user: {}", userRecord.getUid());
 
             // Optionally set custom claims:
-            // firebaseAuth.setCustomUserClaims(userRecord.getUid(), Map.of("role", "USER"));
+            firebaseAuth.setCustomUserClaims(userRecord.getUid(), Map.of("role", "USER"));
 
             return firebaseAuth.createCustomToken(userRecord.getUid());
         } catch (FirebaseAuthException e) {
@@ -75,6 +84,8 @@ public class AuthServiceFirebaseImpl implements AuthService {
         try {
             UserRecord userRecord = firebaseAuth.getUserByEmail(email);
             String link = firebaseAuth.generatePasswordResetLink(email);
+
+            log.info("Link: {}", link);
             log.info("Password reset link generated for user: {}", userRecord.getUid());
             return UUID.randomUUID().toString();
         } catch (FirebaseAuthException e) {
@@ -121,11 +132,27 @@ public class AuthServiceFirebaseImpl implements AuthService {
             String verificationLink = firebaseAuth.generateEmailVerificationLink(email, actionCodeSettings);
             log.info("Email verification link generated for user: {}", email);
 
-            // In production, send this verification link via your email service
+            // TODO: In production, send this verification link via your email service
             return verificationLink;
         } catch (FirebaseAuthException e) {
             log.error("Error generating email verification link: {}", e.getMessage());
             throw new RuntimeException("Failed to generate email verification link: " + e.getMessage());
         }
+    }
+
+    @Override
+    public TokenValidationResponse validateCurrentToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
+            String username = userDetails.getUsername();
+            // Get token expiration from JWT service
+            long expiresAt = jwtService.getExpirationTimeForCurrentToken();
+
+            return new TokenValidationResponse(true, username, expiresAt);
+        }
+
+        // This should not happen as the endpoint is protected and requires authentication
+        throw new IllegalStateException("No authentication found in security context");
     }
 }

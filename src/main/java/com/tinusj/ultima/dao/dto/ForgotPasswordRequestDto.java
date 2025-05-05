@@ -11,9 +11,9 @@ import jakarta.validation.constraints.NotBlank;
  */
 @Schema(description = "Request to initiate password reset")
 public record ForgotPasswordRequestDto(
-        @NotBlank
-        @Email
-        @Schema(description = "Registered email address", example = "user@example.com", required = true)
+        @Email(message = "Email should be valid")
+        @NotBlank(message = "Email is mandatory")
+        @Schema(description = "Registered email address", example = "user@example.com", requiredMode = Schema.RequiredMode.REQUIRED)
         String email
 ) {
 }
