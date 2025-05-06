@@ -1,6 +1,7 @@
 package com.tinusj.ultima.controller;
 
 import com.tinusj.ultima.dao.dto.ActivityDto;
+import com.tinusj.ultima.dao.dto.ApiResponse;
 import com.tinusj.ultima.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,13 +16,13 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/activities")
+@RequestMapping("/v1/activities")
 @PreAuthorize("isAuthenticated()")
 public class ActivityController {
     private final DashboardService dashboardService;
 
     @GetMapping
-    public ResponseEntity<List<ActivityDto>> getActivities() {
-        return ResponseEntity.ok(dashboardService.getActivities());
+    public ResponseEntity<ApiResponse<List<ActivityDto>>> getActivities() {
+        return ResponseEntity.ok(ApiResponse.ok(dashboardService.getActivities()));
     }
 }

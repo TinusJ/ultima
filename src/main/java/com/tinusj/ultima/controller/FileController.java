@@ -1,5 +1,6 @@
 package com.tinusj.ultima.controller;
 
+import com.tinusj.ultima.dao.dto.ApiResponse;
 import com.tinusj.ultima.dao.dto.FileDto;
 import com.tinusj.ultima.dao.dto.FileUploadResponseDto;
 import com.tinusj.ultima.dao.entity.FileEntity;
@@ -17,7 +18,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
@@ -29,7 +36,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/files")
+@RequestMapping("/v1/files")
 public class FileController {
     private final DashboardService dashboardService;
     private final FileStorageService fileStorageService;
@@ -39,13 +46,13 @@ public class FileController {
 
     @GetMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<FileDto>> getFiles(@RequestParam(value = "folderId", required = false) Long folderId) {
-        return ResponseEntity.ok(dashboardService.getFiles(folderId));
+    public ResponseEntity<ApiResponse<List<FileDto>>> getFiles(@RequestParam(value = "folderId", required = false) Long folderId) {
+        return ResponseEntity.ok(ApiResponse.ok(dashboardService.getFiles(folderId)));
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<FileUploadResponseDto> uploadFile(
+    public ResponseEntity<ApiResponse<FileUploadResponseDto>> uploadFile(
             @RequestParam("file") MultipartFile file,
             @RequestParam(value = "folderId", required = false) Long folderId) {
         String originalFileName = file.getOriginalFilename();
@@ -68,7 +75,7 @@ public class FileController {
 
         fileRepository.save(fileEntity);
 
-        return ResponseEntity.ok(new FileUploadResponseDto(fileEntity.getId(), originalFileName, "File uploaded successfully"));
+        return ResponseEntity.ok(ApiResponse.ok(new FileUploadResponseDto(fileEntity.getId(), originalFileName, "File uploaded successfully")));
     }
 
     @GetMapping("/{id}/download")

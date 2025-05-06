@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<?>> handleAllUncaught(Exception ex, WebRequest req) {
+    public ResponseEntity<ApiResponse<?>> handleAllUncaught(Exception ex) {
         ApiError error = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "An unexpected error occurred",

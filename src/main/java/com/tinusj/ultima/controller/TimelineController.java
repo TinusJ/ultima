@@ -1,5 +1,6 @@
 package com.tinusj.ultima.controller;
 
+import com.tinusj.ultima.dao.dto.ApiResponse;
 import com.tinusj.ultima.dao.dto.TimelineEventDto;
 import com.tinusj.ultima.service.DashboardService;
 import lombok.RequiredArgsConstructor;
@@ -14,12 +15,12 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/timeline")
+@RequestMapping("/v1/timeline")
 public class TimelineController {
     private final DashboardService dashboardService;
 
     @GetMapping
-    public ResponseEntity<List<TimelineEventDto>> getTimelineEvents() {
-        return ResponseEntity.ok(dashboardService.getTimelineEvents());
+    public ResponseEntity<ApiResponse<List<TimelineEventDto>>> getTimelineEvents() {
+        return ResponseEntity.ok(ApiResponse.ok(dashboardService.getTimelineEvents()));
     }
 }

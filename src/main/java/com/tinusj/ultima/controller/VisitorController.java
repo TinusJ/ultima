@@ -1,5 +1,6 @@
 package com.tinusj.ultima.controller;
 
+import com.tinusj.ultima.dao.dto.ApiResponse;
 import com.tinusj.ultima.dao.dto.VisitorDto;
 import com.tinusj.ultima.service.DashboardService;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +13,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/visitors")
+@RequestMapping("/v1/visitors")
 public class VisitorController {
     private final DashboardService dashboardService;
 
     @GetMapping
-    public ResponseEntity<List<VisitorDto>> getVisitors() {
-        return ResponseEntity.ok(dashboardService.getVisitors());
+    public ResponseEntity<ApiResponse<List<VisitorDto>>> getVisitors() {
+        return ResponseEntity.ok(ApiResponse.ok(dashboardService.getVisitors()));
     }
 }

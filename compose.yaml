@@ -18,17 +18,17 @@ services:
     image: "ultima/backend:latest"
     container_name: backend
     ports:
-      - "8080:8080"
+      - "80:8080"
     environment:
-      - "SPRING_PROFILES_ACTIVE=docker"
+      - "SPRING_PROFILES_ACTIVE=docker, firebase"
     depends_on:
       - postgres
 
-  web:
-    build:
-      context: E:\Angular\ultima-ng-19.0.0
-      target: builder
-    image: "ultima/frontend:latest"
-    container_name: frontend
-    ports:
-      - "80:4200"
+#  web:
+#    build:
+#      context: E:\Angular\ultima-ng-19.0.0
+#      target: builder
+#    image: "ultima/frontend:latest"
+#    container_name: frontend
+#    ports:
+#      - "80:4200"
